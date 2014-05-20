@@ -9,7 +9,6 @@ define([
     'physicsjs',
     'physicsjs/renderers/canvas',
     'physicsjs/behaviors/constant-acceleration',
-    'physicsjs/behaviors/verlet-constraints',
     'physicsjs/behaviors/attractor',
     'physicsjs/behaviors/interactive',
     'physicsjs/bodies/circle',
@@ -361,11 +360,6 @@ define([
 
             this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
 
-            this.constraints = Physics.behavior('verlet-constraints', {
-                iterations: 2
-            });
-
-            world.add( this.center ).add( this.constraints );
             this.world = world;
             this.bodies = [ this.center ];
         }
@@ -386,7 +380,6 @@ define([
             b.refreshView();
             this.bodies.push( b );
             this.world.add( b );
-            this.constraints.distanceConstraint( this.bodies[ l - 1 ], b, 1 );
 
             return b;
         }
@@ -395,24 +388,7 @@ define([
             if ( this.bodies.length > 1 ){
                 var b = this.bodies.pop();
                 this.world.remove( b );
-                var constrs = Physics.util.filter(this.constraints.getConstraints().distanceConstraints, Physics.query({
-                    $or: [
-                        { bodyA: b }
-                        ,{ bodyB: b }
-                    ]
-                }));
-                $.each(constrs, function( i, c ){
-                    self.constraints.remove( c );
-                });
             }
-        }
-        ,resetConstraints: function(){
-            var v, b;
-            this.constraints.drop();
-            for ( var i = 1, l = this.bodies.length; i < l; i++ ){
-                this.constraints.distanceConstraint( this.bodies[ i - 1 ], this.bodies[ i ], 1 );
-            }
-            return this;
         }
         ,reset: function(){
             var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0;
@@ -842,7 +818,6 @@ define([
                                 body.state.pos.set( g.deltaX, g.deltaY ).vadd( orig );
                                 body.initial.x = body.state.pos.x;
                                 body.initial.y = body.state.pos.y;
-                                planetarySystem.resetConstraints();
                             };
 
                             self.on('drag', drag);
@@ -870,7 +845,6 @@ define([
                                 b = planetarySystem.bodies[ i ];
                                 b.state.pos.clone( b.initial ).vadd( delta );
                             }
-                            planetarySystem.resetConstraints();
                         };
 
                         self.on('drag', drag);
