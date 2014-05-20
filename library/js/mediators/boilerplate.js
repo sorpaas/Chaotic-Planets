@@ -214,7 +214,7 @@ define([
         });
     };
 
-    var pendulumStyles = {
+    var planetarySystemStyles = {
             lineWidth: 2
             ,strokeStyle: colors.deepGreyLight
             ,fillStyle: colors.deepGreyLight
@@ -343,18 +343,18 @@ define([
         return v.set( 1, 0 ).rotate( Math.random() * Math.PI * 2 );
     }
 
-    var Pendulum = function( world, x, y, g ){
+    var PlanetarySystem = function( world, x, y, g ){
         this.init( world, x, y, g );
     };
 
-    Pendulum.prototype = {
+    PlanetarySystem.prototype = {
         init: function( world, x, y, g ){
             this.center = Physics.body('circle', {
                 x: x
                 ,y: y
                 ,treatment: 'static'
                 ,radius: 5
-                ,styles: $.extend({}, pendulumStyles, { fillStyle: colors.blueDark, strokeStyle: colors.blueDark })
+                ,styles: $.extend({}, planetarySystemStyles, { fillStyle: colors.blueDark, strokeStyle: colors.blueDark })
             });
 
             this.g = g;
@@ -507,11 +507,11 @@ define([
                         ,path: b.path
                     });
                 }
-                return '#pendulum=' + window.encodeURIComponent(window.btoa(JSON.stringify( data )));
+                return '#planetarySystem=' + window.encodeURIComponent(window.btoa(JSON.stringify( data )));
             }
 
             // find settings
-            hash = hash.match(/pendulum=([^&]*)/);
+            hash = hash.match(/planetarySystem=([^&]*)/);
 
             if ( !hash || !hash.length ){
                 return false;
@@ -529,7 +529,7 @@ define([
                 return false;
             }
 
-            // set pendulum state
+            // set planetarySystem state
             while ( this.bodies.length > 1 ){
                 this.removeVertex();
             }
@@ -604,7 +604,7 @@ define([
                         }
 
                         $(this).attr('href', img).attr('target', '_blank');
-                        this.download = 'minutelabs-chaotic-pendulum.png';
+                        this.download = 'minutelabs-chaotic-planets.png';
                     })
                     .on('touch', '.ctrl-pause', function( e ){
                         e.preventDefault();
@@ -772,8 +772,8 @@ define([
             // add the renderer
             world.add(renderer);
 
-            // pendulum
-            var pendulum = self.pendulum = new Pendulum( world, 0, 0, g );
+            // planetarySystem
+            var planetarySystem = self.planetarySystem = new PlanetarySystem( world, 0, 0, g );
 
             self.on({
                 resize: function() {
@@ -796,19 +796,19 @@ define([
                     renderer.layer('vectors').el.style.zIndex = on ? 3 : 1;
                 }
                 ,randomize: function( e ){
-                    pendulum.randomize( viewHeight / 6 );
-                    pendulum.reset();
+                    planetarySystem.randomize( viewHeight / 6 );
+                    planetarySystem.reset();
                     Draw.clear( renderer.layer('paths').ctx );
                     Draw.clear( renderer.layer('paths').hdctx );
-                    tracker.applyTo( pendulum.bodies );
+                    tracker.applyTo( planetarySystem.bodies );
                     self.emit('modified');
                 }
                 ,add: function(){
                     var lastArm = Physics.vector();
                     var dir = Physics.vector();
-                    var end = pendulum.bodies[ pendulum.bodies.length - 1 ].state.pos;
-                    lastArm.clone( end ).vsub( pendulum.bodies[ pendulum.bodies.length - 2 ].state.pos );
-                    dir.clone( pendulum.center.state.pos ).vsub( end );
+                    var end = planetarySystem.bodies[ planetarySystem.bodies.length - 1 ].state.pos;
+                    lastArm.clone( end ).vsub( planetarySystem.bodies[ planetarySystem.bodies.length - 2 ].state.pos );
+                    dir.clone( planetarySystem.center.state.pos ).vsub( end );
                     dir.rotate( Math.PI * Math.random() / 4 );
                     dir.normalize().mult( 40 + 30 * Math.random() );
 
@@ -822,8 +822,8 @@ define([
                 }
                 ,create: function( e, pos ){
                     if ( !self.selectedBody && !self.editVelocities ){
-                        var p = pendulum.addVertex( pos.x, pos.y );
-                        tracker.applyTo( pendulum.bodies );
+                        var p = planetarySystem.addVertex( pos.x, pos.y );
+                        tracker.applyTo( planetarySystem.bodies );
                         self.emit('grab', p);
                     }
                 }
@@ -842,7 +842,7 @@ define([
                                 body.state.pos.set( g.deltaX, g.deltaY ).vadd( orig );
                                 body.initial.x = body.state.pos.x;
                                 body.initial.y = body.state.pos.y;
-                                pendulum.resetConstraints();
+                                planetarySystem.resetConstraints();
                             };
 
                             self.on('drag', drag);
@@ -856,7 +856,7 @@ define([
                             });
                             self.$ctxMenu.hide();
                         }
-                    } else if ( body === pendulum.center ){
+                    } else if ( body === planetarySystem.center ){
 
                         // move the center (and all others relative to center)
                         vis = self.$ctxMenu.is(':visible');
@@ -866,18 +866,18 @@ define([
                             var b;
                             body.state.pos.set( g.deltaX, g.deltaY ).vadd( orig );
                             delta.clone( body.state.pos ).vsub( orig );
-                            for ( var i = 1, l = pendulum.bodies.length; i < l; i++ ){
-                                b = pendulum.bodies[ i ];
+                            for ( var i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
+                                b = planetarySystem.bodies[ i ];
                                 b.state.pos.clone( b.initial ).vadd( delta );
                             }
-                            pendulum.resetConstraints();
+                            planetarySystem.resetConstraints();
                         };
 
                         self.on('drag', drag);
                         self.on('release', function( e ){
                             var b;
-                            for ( var i = 1, l = pendulum.bodies.length; i < l; i++ ){
-                                b = pendulum.bodies[ i ];
+                            for ( var i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
+                                b = planetarySystem.bodies[ i ];
                                 b.initial.x = b.state.pos.x;
                                 b.initial.y = b.state.pos.y;
                             }
@@ -931,17 +931,17 @@ define([
                     self.emit('pause');
                     setTimeout(function(){
                         world._meta.interpolateTime = 0;
-                        pendulum.reset();
+                        planetarySystem.reset();
                         tracker.clear();
                         Draw.clear( renderer.layer('paths').ctx );
                         Draw.clear( renderer.layer('paths').hdctx );
-                        self.contextualMenu( pendulum.bodies[ pendulum.bodies.length - 1 ] );
+                        self.contextualMenu( planetarySystem.bodies[ planetarySystem.bodies.length - 1 ] );
                         world.render();
                     }, 100);
                 }
                 ,start: function(){
                     self.contextualMenu( null );
-                    pendulum.reset();
+                    planetarySystem.reset();
                     self.emit('unpause');
                 }
                 ,pause: function(){
@@ -952,24 +952,24 @@ define([
                 }
                 ,remove: function(){
                     self.contextualMenu( null );
-                    pendulum.removeVertex();
+                    planetarySystem.removeVertex();
                 }
                 ,modified: function(){
-                    window.location.hash = pendulum.hash();
+                    window.location.hash = planetarySystem.hash();
                 }
             });
 
-            if ( !pendulum.hash( window.location.hash ) ){
-                var first = pendulum.addVertex( 140, 0 );
+            if ( !planetarySystem.hash( window.location.hash ) ){
+                var first = planetarySystem.addVertex( 140, 0 );
                 first.mass = 10;
                 first.state.vel.set( 0, 0.15 );
                 first.initial.vel.y = 0.15;
                 first.path = false;
-                pendulum.addVertex( 240, 0 );
+                planetarySystem.addVertex( 240, 0 );
             }
 
-            pendulum.reset();
-            tracker.applyTo( pendulum.bodies );
+            planetarySystem.reset();
+            tracker.applyTo( planetarySystem.bodies );
 
             function len( x, y, x2, y2 ){
                 x -= x2;
@@ -983,15 +983,15 @@ define([
             renderer.layer('main').render = function(){
                 var b, p, points = [];
                 var t = world._meta.interpolateTime || 0;
-                for ( var i = 0, l = pendulum.bodies.length; i < l; i++ ){
-                    b = pendulum.bodies[i];
+                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
+                    b = planetarySystem.bodies[i];
                     points.push([ b.state.pos.x + b.state.vel.x * t , b.state.pos.y + b.state.vel.y * t ]);
                 }
 
                 Draw( this.ctx )
                     .offset( center.x, center.y )
                     .clear()
-                    .styles( pendulumStyles )
+                    .styles( planetarySystemStyles )
                     .lines( points )
                     ;
 
@@ -1028,8 +1028,8 @@ define([
                 pathRenderer.ctx.globalCompositeOperation = 'color-dodge';
                 pathRenderer.hdctx.globalCompositeOperation = 'color-dodge';
 
-                for ( var i = 0, l = pendulum.bodies.length; i < l; i++ ){
-                    b = pendulum.bodies[i];
+                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
+                    b = planetarySystem.bodies[i];
                     p = b.positionBuffer;
                     if (!p){ continue; }
 
@@ -1087,8 +1087,8 @@ define([
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
 
-                for ( var i = 0, l = pendulum.bodies.length; i < l; i++ ){
-                    b = pendulum.bodies[i];
+                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
+                    b = planetarySystem.bodies[i];
                     v.clone( b.state.vel )
                         .mult( vFactor )
                         .vadd( int.clone(b.state.vel).mult(t).vadd(b.state.pos) )

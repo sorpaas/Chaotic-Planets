@@ -2,9 +2,9 @@ permalink: /:year-:month-:day/:title
 markdown: rdiscount
 exclude: ["README.md", "CNAME", "LICENSE", "build", "config.rb", "Gruntfile.js", "package.json", "jshint.json"]
 
-title : "Chaotic Pendulum"
+title : "Chaotic Planets"
 id : "85732814424"
-description : "Create your own beautiful chaos."
+description : "Create your own orbital chaos."
 thumb: "thumb.gif"
 version: "0.0.2"
 
