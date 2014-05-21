@@ -733,7 +733,7 @@ define([
                 ,renderer
                 ,tracker = Physics.behavior('position-tracker')
                 ,startT = Date.now()
-                ,g = 0.0004
+                ,g = 0.0
                 ;
 
             // create a renderer
@@ -1089,12 +1089,6 @@ define([
                 order: 0,
                 strength: 0.002
             });
-
-            // add things to the world
-            world.add([
-                Physics.behavior('constant-acceleration', { strength: g })
-                ,tracker
-            ]);
 
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {

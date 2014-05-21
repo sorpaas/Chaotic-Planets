@@ -18,7 +18,6 @@ js/modules/canvas-draw.js
 js/vendor/physicsjs-0.6.0/physicsjs-0.6.0.min.js
 js/vendor/physicsjs-0.6.0/renderers/canvas.js
 js/vendor/physicsjs-0.6.0/behaviors/constant-acceleration.js
-js/vendor/physicsjs-0.6.0/behaviors/verlet-constraints.js
 js/vendor/physicsjs-0.6.0/behaviors/attractor.js
 js/vendor/physicsjs-0.6.0/behaviors/interactive.js
 js/vendor/physicsjs-0.6.0/geometries/circle.js
