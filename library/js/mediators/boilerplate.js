@@ -215,13 +215,7 @@ define([
         });
     };
 
-    var planetarySystemStyles = {
-            lineWidth: 2
-            ,strokeStyle: colors.deepGreyLight
-            ,fillStyle: colors.deepGreyLight
-            ,shadowBlur: 1
-        }
-        ,vectorStyles = {
+    var vectorStyles = {
             strokeStyle: colors.blueDark
             ,fillStyle: colors.blueDark
             ,lineWidth: 2
@@ -355,7 +349,6 @@ define([
                 ,y: y
                 ,treatment: 'static'
                 ,radius: 5
-                ,styles: $.extend({}, planetarySystemStyles, { fillStyle: colors.blueDark, strokeStyle: colors.blueDark })
             });
 
             this.g = g;
@@ -967,8 +960,6 @@ define([
                 Draw( this.ctx )
                     .offset( center.x, center.y )
                     .clear()
-                    .styles( planetarySystemStyles )
-                    .lines( points )
                     ;
 
                 oldrender.call(this, false);
