@@ -1096,6 +1096,7 @@ define([
             world.add([
                 Physics.behavior('newtonian', { strength: 0.5 })
                 ,Physics.behavior('body-impulse-response')
+                ,tracker
             ]);
 
             // subscribe to ticker to advance the simulation
