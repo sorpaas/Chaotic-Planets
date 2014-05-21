@@ -20,6 +20,8 @@ js/vendor/physicsjs-0.6.0/renderers/canvas.js
 js/vendor/physicsjs-0.6.0/behaviors/constant-acceleration.js
 js/vendor/physicsjs-0.6.0/behaviors/attractor.js
 js/vendor/physicsjs-0.6.0/behaviors/interactive.js
+js/vendor/physicsjs-0.6.0/behaviors/newtonian.js
+js/vendor/physicsjs-0.6.0/behaviors/body-impulse-response.js
 js/vendor/physicsjs-0.6.0/geometries/circle.js
 js/vendor/physicsjs-0.6.0/bodies/circle.js
 js/vendor/raf.js

@@ -11,6 +11,8 @@ define([
     'physicsjs/behaviors/constant-acceleration',
     'physicsjs/behaviors/attractor',
     'physicsjs/behaviors/interactive',
+    'physicsjs/behaviors/newtonian',
+    'physicsjs/behaviors/body-impulse-response',
     'physicsjs/bodies/circle',
     'raf'
 ], function(
@@ -1089,6 +1091,12 @@ define([
                 order: 0,
                 strength: 0.002
             });
+
+            // add newtonian attraction to the world
+            world.add([
+                Physics.behavior('newtonian', { strength: 0.5 })
+                ,Physics.behavior('body-impulse-response')
+            ]);
 
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
