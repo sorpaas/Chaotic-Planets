@@ -351,12 +351,24 @@ define([
                 ,radius: 5
             });
 
+            this.centerOfMass = Physics.body('circle', {
+                x: x
+                ,y: y
+                ,treatment: 'static'
+                ,radius: 0
+            });
+
             this.g = g;
 
             this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
 
             this.world = world;
             this.bodies = [ this.center ];
+        }
+        ,calcCenterOfMass: function(){
+            // for now, testing with a constant velocity
+            var p = this.centerOfMass.state.pos;
+            this.centerOfMass.state.pos = new Physics.vector(p.x+3,p.y+3);
         }
         ,addVertex: function( x, y ){
 
@@ -1077,6 +1089,10 @@ define([
                 scratch.done();
             };
 
+            // follow the center of mass
+            renderer.layer('main').options.follow = planetarySystem.centerOfMass;
+            renderer.layer('vectors').options.follow = planetarySystem.centerOfMass;
+
             // add some fun interaction
             var attractor = Physics.behavior('attractor', {
                 order: 0,
@@ -1092,6 +1108,17 @@ define([
 
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
+
+                // test, move center of mass at constant velocity
+                planetarySystem.calcCenterOfMass();
+
+                // test, call resize on canvas at constant rate
+                var r = self.renderer;
+                var m = r.layer('main');
+                var v = r.layer('vectors');
+                m.options.scale = m.options.scale*0.99;
+                v.options.scale = v.options.scale*0.99;
+
                 world.step( time );
                 world.render();
             });
