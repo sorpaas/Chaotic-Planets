@@ -1079,6 +1079,7 @@ define([
                     ,int = scratch.vector()
                     ,t = renderer.interpolateTime || 0
                     ,ang
+                    ,centerOfMass = planetarySystem.centerOfMass.state.pos
                     ;
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
@@ -1090,6 +1091,9 @@ define([
                         .vadd( int.clone(b.state.vel).mult(t).vadd(b.state.pos) )
                         .vadd( center )
                         ;
+
+                    v.vsub( centerOfMass );
+                    int.vsub( centerOfMass );
 
                     Draw
                         .line( center.x + int.x, center.y + int.y, v.x, v.y )
