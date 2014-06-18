@@ -1018,7 +1018,9 @@ define([
                 }
 
                 Draw( this.ctx )
-                    .offset( center.x, center.y )
+                    .offset(
+                         center.x - planetarySystem.centerOfMass.state.pos.x,
+                         center.y - planetarySystem.centerOfMass.state.pos.y)
                     ;
 
                 pathRenderer.ctx.globalCompositeOperation = 'color-dodge';
