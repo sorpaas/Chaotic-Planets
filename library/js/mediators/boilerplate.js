@@ -1083,7 +1083,7 @@ define([
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
 
-                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
+                for ( var i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
                     b = planetarySystem.bodies[i];
                     v.clone( b.state.vel )
                         .mult( vFactor )
