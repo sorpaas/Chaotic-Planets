@@ -366,9 +366,26 @@ define([
             this.bodies = [ this.center ];
         }
         ,calcCenterOfMass: function(){
-            // for now, testing with a constant velocity
-            var p = this.centerOfMass.state.pos;
-            this.centerOfMass.state.pos = new Physics.vector(p.x+3,p.y+3);
+
+            // center of mass (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
+
+            var b
+                ,numeratorX = 0
+                ,numeratorY = 0
+                ,denominator = 0
+                ;
+
+            for ( var i = 1, l = this.bodies.length; i < l; i++ ){
+                b = this.bodies[ i ];
+                numeratorX += b.mass * b.state.pos.x;
+                numeratorY += b.mass * b.state.pos.y;
+                denominator += b.mass;
+            }
+
+            this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(
+                numeratorX/denominator,
+                numeratorY/denominator);
+
         }
         ,addVertex: function( x, y ){
 
@@ -1109,15 +1126,8 @@ define([
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
 
-                // test, move center of mass at constant velocity
+                // recalculate center of mass
                 planetarySystem.calcCenterOfMass();
-
-                // test, call resize on canvas at constant rate
-                var r = self.renderer;
-                var m = r.layer('main');
-                var v = r.layer('vectors');
-                m.options.scale = m.options.scale*0.99;
-                v.options.scale = v.options.scale*0.99;
 
                 world.step( time );
                 world.render();
