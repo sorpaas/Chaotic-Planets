@@ -1108,7 +1108,6 @@ define([
 
             // follow the center of mass
             renderer.layer('main').options.follow = planetarySystem.centerOfMass;
-            renderer.layer('vectors').options.follow = planetarySystem.centerOfMass;
 
             // add some fun interaction
             var attractor = Physics.behavior('attractor', {
