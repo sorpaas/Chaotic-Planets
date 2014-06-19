@@ -727,6 +727,8 @@ define([
                 ,h = el.height
                 ;
 
+            var centerOfMass = this.planetarySystem.center.centerOfMass;
+
             canvas.width = w;
             canvas.height = h;
             ctx.fillStyle = colors.deepGreyDark;
@@ -734,6 +736,9 @@ define([
             ctx.drawImage( el, 0, 0 );
             ctx.drawImage( minuteLabsLogo, 0, h - 96 );
             Draw( ctx )
+                .offset(
+                     - centerOfMass.x,
+                     - centerOfMass.y)
                 .styles({
                     fillStyle: colors.grey,
                     font: '40px "latin-modern-mono-light", Courier, monospace'
