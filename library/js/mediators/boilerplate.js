@@ -1021,6 +1021,7 @@ define([
 
             pathRenderer.render = function(){
                 var b, p, grad, c, oldc, j, ll, path = [];
+                var centerOfMass = planetarySystem.centerOfMass.state.pos;
 
                 if ( self.edit ){
                     return;
@@ -1028,8 +1029,8 @@ define([
 
                 Draw( this.ctx )
                     .offset(
-                         center.x - planetarySystem.centerOfMass.state.pos.x,
-                         center.y - planetarySystem.centerOfMass.state.pos.y)
+                         center.x - centerOfMass.x,
+                         center.y - centerOfMass.y)
                     ;
 
                 pathRenderer.ctx.globalCompositeOperation = 'color-dodge';
