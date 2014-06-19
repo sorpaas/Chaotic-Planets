@@ -930,6 +930,9 @@ define([
                     }
                 }
                 ,edit: function(){
+                    if (self.edit){
+                        renderer.layer('main').options.follow = null;
+                    }
                     self.emit('edit-velocities', false);
                     self.emit('pause');
                     setTimeout(function(){
@@ -951,6 +954,7 @@ define([
                     world.pause();
                 }
                 ,unpause: function(){
+                    renderer.layer('main').options.follow = planetarySystem.centerOfMass;
                     world.unpause();
                 }
                 ,remove: function(){
@@ -1099,8 +1103,10 @@ define([
                         .vadd( center )
                         ;
 
-                    v.vsub( centerOfMass );
-                    int.vsub( centerOfMass );
+                    if (!self.edit){
+                        v.vsub( centerOfMass );
+                        int.vsub( centerOfMass );
+                    }
 
                     Draw
                         .line( center.x + int.x, center.y + int.y, v.x, v.y )
