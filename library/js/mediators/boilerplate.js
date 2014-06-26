@@ -266,6 +266,7 @@ define([
                 var bodies = this.getTargets()
                     ,body
                     ,list
+                    ,centerPos = bodies[0].centerOfMass
                     ;
 
                 for ( var i = 0, l = bodies.length; i < l; ++i ){
@@ -274,10 +275,11 @@ define([
                     list = body.positionBuffer || (body.positionBuffer = []);
                     if ( list.length > 100 ){
                         list.splice( 0, list.length - 100 );
-                        list.push(body.state.old.pos.x, body.state.old.pos.y);
-                    } else {
-                        list.push(body.state.old.pos.x, body.state.old.pos.y);
                     }
+                    list.push(
+                        body.state.old.pos.x - centerPos.x,
+                        body.state.old.pos.y - centerPos.y
+                        );
                 }
             }
         };
@@ -780,6 +782,10 @@ define([
             // planetarySystem
             var planetarySystem = self.planetarySystem = new PlanetarySystem( world, 0, 0, g );
 
+            world.on('integrate:velocities', function(){
+                planetarySystem.calcCenterOfMass();
+            })
+
             self.on({
                 resize: function() {
 
@@ -1028,9 +1034,10 @@ define([
                 }
 
                 Draw( this.ctx )
-                    .offset(
-                         center.x - centerOfMass.x,
-                         center.y - centerOfMass.y)
+                    .offset( center.x, center.y )
+                    // .offset(
+                    //      center.x - centerOfMass.x,
+                    //      center.y - centerOfMass.y)
                     ;
 
                 pathRenderer.ctx.globalCompositeOperation = 'color-dodge';
@@ -1144,7 +1151,7 @@ define([
             Physics.util.ticker.on(function( time ) {
 
                 // recalculate center of mass
-                planetarySystem.calcCenterOfMass();
+                //planetarySystem.calcCenterOfMass();
 
                 world.step( time );
                 world.render();
