@@ -784,7 +784,7 @@ define([
 
             world.on('integrate:velocities', function(){
                 planetarySystem.calcCenterOfMass();
-            })
+            });
 
             self.on({
                 resize: function() {
