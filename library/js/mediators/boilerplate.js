@@ -391,18 +391,18 @@ define([
 
         }
         ,subtractCenterOfMass: function(){
-            var b;
+            var b, com=this.center.state;
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                b.state.pos.vsub( this.center.centerOfMass );
-                b.state.vel.vsub( this.center.centerOfMassVel );
+                b.state.pos.vsub( com.pos );
+                b.state.vel.vsub( com.vel );
                 b.initial.x = b.state.pos.x;
                 b.initial.y = b.state.pos.y;
                 b.initial.vel.x = b.state.vel.x;
                 b.initial.vel.y = b.state.vel.y;
             }
-            this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(0,0);
-            this.center.centerOfMassVel = this.centerOfMass.state.vel = new Physics.vector(0,0);
+            com.pos = new Physics.vector(0,0);
+            com.vel = new Physics.vector(0,0);
         }
         ,addVertex: function( x, y ){
 
