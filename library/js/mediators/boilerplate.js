@@ -369,24 +369,32 @@ define([
         }
         ,calcCenterOfMass: function(){
 
-            // center of mass (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
+            // center of mass pos (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
+            // center of mass vel (v) = ( m1*v1 + m2*v2 ... ) / ( m1 + m2 ... )
 
             var b
-                ,numeratorX = 0
-                ,numeratorY = 0
-                ,denominator = 0
+                ,sumPosX = 0
+                ,sumPosY = 0
+                ,sumVelX = 0
+                ,sumVelY = 0
+                ,sumMass = 0
                 ;
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                numeratorX += b.mass * b.state.pos.x;
-                numeratorY += b.mass * b.state.pos.y;
-                denominator += b.mass;
+                sumPosX += b.mass * b.state.pos.x;
+                sumPosY += b.mass * b.state.pos.y;
+                sumVelX += b.mass * b.state.vel.x;
+                sumVelY += b.mass * b.state.vel.y;
+                sumMass += b.mass;
             }
 
             this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(
-                numeratorX/denominator,
-                numeratorY/denominator);
+                sumPosX/sumMass,
+                sumPosY/sumMass);
+            this.center.centerOfMassVel = this.centerOfMass.state.vel = new Physics.vector(
+                sumVelX/sumMass,
+                sumVelY/sumMass);
 
         }
         ,addVertex: function( x, y ){
