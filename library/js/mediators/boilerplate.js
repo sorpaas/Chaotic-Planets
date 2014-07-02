@@ -390,6 +390,20 @@ define([
                 sumVelY/sumMass);
 
         }
+        ,subtractCenterOfMass: function(){
+            var b;
+            for ( var i = 1, l = this.bodies.length; i < l; i++ ){
+                b = this.bodies[ i ];
+                b.state.pos.vsub( this.center.centerOfMass );
+                b.state.vel.vsub( this.center.centerOfMassVel );
+                b.initial.x = b.state.pos.x;
+                b.initial.y = b.state.pos.y;
+                b.initial.vel.x = b.state.vel.x;
+                b.initial.vel.y = b.state.vel.y;
+            }
+            this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(0,0);
+            this.center.centerOfMassVel = this.centerOfMass.state.vel = new Physics.vector(0,0);
+        }
         ,addVertex: function( x, y ){
 
             var l = this.bodies.length;
@@ -418,11 +432,21 @@ define([
             }
         }
         ,reset: function(){
-            var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0;
+            var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0, com = this.center.state;
             last.maxSpeed = 0;
+
+            this.calcCenterOfMass();
+
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 v = b.initial;
+
+                // subtract com
+                v.x -= com.pos.x
+                v.y -= com.pos.y
+                v.vel.x -= com.vel.x;
+                v.vel.y -= com.vel.y;
+
                 b.state.pos.clone( v );
                 b.state.old.pos.clone( v );
                 b.state.vel.clone( v.vel );
@@ -434,6 +458,11 @@ define([
                 b.refreshView();
                 last = b;
             }
+
+            // reset com
+            com.pos.zero();
+            com.vel.zero();
+
             return this;
         }
         ,maxAngularVel: function(){
