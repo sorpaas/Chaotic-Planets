@@ -266,7 +266,7 @@ define([
                 var bodies = this.getTargets()
                     ,body
                     ,list
-                    ,centerPos = bodies[0].centerOfMass
+                    ,com = bodies[0].state.pos
                     ;
 
                 for ( var i = 0, l = bodies.length; i < l; ++i ){
@@ -277,8 +277,8 @@ define([
                         list.splice( 0, list.length - 100 );
                     }
                     list.push(
-                        body.state.old.pos.x - centerPos.x,
-                        body.state.old.pos.y - centerPos.y
+                        body.state.old.pos.x - com.x,
+                        body.state.old.pos.y - com.y
                         );
                 }
             }
@@ -353,13 +353,6 @@ define([
                 ,radius: 5
             });
 
-            this.centerOfMass = Physics.body('circle', {
-                x: x
-                ,y: y
-                ,treatment: 'static'
-                ,radius: 0
-            });
-
             this.g = g;
 
             this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
@@ -389,10 +382,10 @@ define([
                 sumMass += b.mass;
             }
 
-            this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(
+            this.center.state.pos = new Physics.vector(
                 sumPosX/sumMass,
                 sumPosY/sumMass);
-            this.center.centerOfMassVel = this.centerOfMass.state.vel = new Physics.vector(
+            this.center.state.vel = new Physics.vector(
                 sumVelX/sumMass,
                 sumVelY/sumMass);
 
@@ -737,7 +730,7 @@ define([
                 ,h = el.height
                 ;
 
-            var centerOfMass = this.planetarySystem.center.centerOfMass;
+            var com = this.planetarySystem.center.state.pos;
 
             canvas.width = w;
             canvas.height = h;
@@ -747,8 +740,8 @@ define([
             ctx.drawImage( minuteLabsLogo, 0, h - 96 );
             Draw( ctx )
                 .offset(
-                     - centerOfMass.x,
-                     - centerOfMass.y)
+                     - com.x,
+                     - com.y)
                 .styles({
                     fillStyle: colors.grey,
                     font: '40px "latin-modern-mono-light", Courier, monospace'
@@ -968,7 +961,7 @@ define([
                     world.pause();
                 }
                 ,unpause: function(){
-                    renderer.layer('main').options.follow = planetarySystem.centerOfMass;
+                    renderer.layer('main').options.follow = planetarySystem.center;
                     world.unpause();
                 }
                 ,remove: function(){
@@ -1035,7 +1028,7 @@ define([
 
             pathRenderer.render = function(){
                 var b, p, grad, c, oldc, j, ll, path = [];
-                var centerOfMass = planetarySystem.centerOfMass.state.pos;
+                //var com = planetarySystem.center.state.pos;
 
                 if ( self.edit ){
                     return;
@@ -1103,7 +1096,7 @@ define([
                     ,int = scratch.vector()
                     ,t = renderer.interpolateTime || 0
                     ,ang
-                    ,centerOfMass = planetarySystem.centerOfMass.state.pos
+                    ,com = planetarySystem.center.state.pos
                     ;
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
@@ -1117,8 +1110,8 @@ define([
                         ;
 
                     if (!self.edit){
-                        v.vsub( centerOfMass );
-                        int.vsub( centerOfMass );
+                        v.vsub( com );
+                        int.vsub( com );
                     }
 
                     Draw
@@ -1137,7 +1130,7 @@ define([
             };
 
             // follow the center of mass
-            renderer.layer('main').options.follow = planetarySystem.centerOfMass;
+            renderer.layer('main').options.follow = planetarySystem.center;
 
             // add some fun interaction
             var attractor = Physics.behavior('attractor', {
