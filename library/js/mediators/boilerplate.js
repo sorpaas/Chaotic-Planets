@@ -241,6 +241,9 @@ define([
     function lerp(a, b, p) {
         return (b-a)*p + a;
     }
+    function lerpv(a, b, p){
+        return new Physics.vector( lerp(a.x,b.x,p), lerp(a.y,b.y,p) );
+    }
 
     Physics.behavior('position-tracker', function( parent ){
 
@@ -360,7 +363,7 @@ define([
             this.world = world;
             this.bodies = [ this.center ];
         }
-        ,calcCenterOfMass: function(){
+        ,calcCenterOfMass: function(lerp){
 
             // center of mass pos (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
             // center of mass vel (v) = ( m1*v1 + m2*v2 ... ) / ( m1 + m2 ... )
@@ -371,6 +374,7 @@ define([
                 ,sumVelX = 0
                 ,sumVelY = 0
                 ,sumMass = 0
+                ,com=this.center.state
                 ;
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
@@ -382,12 +386,23 @@ define([
                 sumMass += b.mass;
             }
 
-            this.center.state.pos = new Physics.vector(
-                sumPosX/sumMass,
-                sumPosY/sumMass);
-            this.center.state.vel = new Physics.vector(
-                sumVelX/sumMass,
-                sumVelY/sumMass);
+            if (lerp) {
+                com.pos = lerpv( com.pos, new Physics.vector(
+                    sumPosX/sumMass,
+                    sumPosY/sumMass)
+                ,0.5);
+                com.vel = lerpv( com.vel, new Physics.vector(
+                    sumVelX/sumMass,
+                    sumVelY/sumMass)
+                ,0.5);
+            }else{
+                com.pos = new Physics.vector(
+                    sumPosX/sumMass,
+                    sumPosY/sumMass);
+                com.vel = new Physics.vector(
+                    sumVelX/sumMass,
+                    sumVelY/sumMass);
+            }
 
         }
         ,subtractCenterOfMass: function(){
@@ -966,14 +981,11 @@ define([
                     }
                 }
                 ,edit: function(){
-                    if (self.edit){
-                        renderer.layer('main').options.follow = null;
-                    }
                     self.emit('edit-velocities', false);
                     self.emit('pause');
+                    planetarySystem.reset();
                     setTimeout(function(){
                         world._meta.interpolateTime = 0;
-                        planetarySystem.reset();
                         tracker.clear();
                         Draw.clear( renderer.layer('paths').ctx );
                         Draw.clear( renderer.layer('paths').hdctx );
@@ -990,7 +1002,6 @@ define([
                     world.pause();
                 }
                 ,unpause: function(){
-                    renderer.layer('main').options.follow = planetarySystem.center;
                     world.unpause();
                 }
                 ,remove: function(){
@@ -1138,10 +1149,8 @@ define([
                         .vadd( center )
                         ;
 
-                    if (!self.edit){
-                        v.vsub( com );
-                        int.vsub( com );
-                    }
+                    v.vsub( com );
+                    int.vsub( com );
 
                     Draw
                         .line( center.x + int.x, center.y + int.y, v.x, v.y )
@@ -1176,6 +1185,10 @@ define([
 
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
+                if (self.edit){
+                    throttle( planetarySystem.calcCenterOfMass(true) );
+                    throttle( planetarySystem.subtractCenterOfMass() );
+                }
                 world.step( time );
                 world.render();
             });
