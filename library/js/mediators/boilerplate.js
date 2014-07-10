@@ -241,6 +241,9 @@ define([
     function lerp(a, b, p) {
         return (b-a)*p + a;
     }
+    function lerpv(a, b, p){
+        return new Physics.vector( lerp(a.x,b.x,p), lerp(a.y,b.y,p) );
+    }
 
     Physics.behavior('position-tracker', function( parent ){
 
@@ -266,7 +269,7 @@ define([
                 var bodies = this.getTargets()
                     ,body
                     ,list
-                    ,centerPos = bodies[0].centerOfMass
+                    ,com = bodies[0].state.pos
                     ;
 
                 for ( var i = 0, l = bodies.length; i < l; ++i ){
@@ -277,8 +280,8 @@ define([
                         list.splice( 0, list.length - 100 );
                     }
                     list.push(
-                        body.state.old.pos.x - centerPos.x,
-                        body.state.old.pos.y - centerPos.y
+                        body.state.old.pos.x - com.x,
+                        body.state.old.pos.y - com.y
                         );
                 }
             }
@@ -353,13 +356,6 @@ define([
                 ,radius: 5
             });
 
-            this.centerOfMass = Physics.body('circle', {
-                x: x
-                ,y: y
-                ,treatment: 'static'
-                ,radius: 0
-            });
-
             this.g = g;
 
             this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
@@ -367,27 +363,61 @@ define([
             this.world = world;
             this.bodies = [ this.center ];
         }
-        ,calcCenterOfMass: function(){
+        ,calcCenterOfMass: function(lerp){
 
-            // center of mass (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
+            // center of mass pos (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
+            // center of mass vel (v) = ( m1*v1 + m2*v2 ... ) / ( m1 + m2 ... )
 
             var b
-                ,numeratorX = 0
-                ,numeratorY = 0
-                ,denominator = 0
+                ,sumPosX = 0
+                ,sumPosY = 0
+                ,sumVelX = 0
+                ,sumVelY = 0
+                ,sumMass = 0
+                ,com=this.center.state
                 ;
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                numeratorX += b.mass * b.state.pos.x;
-                numeratorY += b.mass * b.state.pos.y;
-                denominator += b.mass;
+                sumPosX += b.mass * b.state.pos.x;
+                sumPosY += b.mass * b.state.pos.y;
+                sumVelX += b.mass * b.state.vel.x;
+                sumVelY += b.mass * b.state.vel.y;
+                sumMass += b.mass;
             }
 
-            this.center.centerOfMass = this.centerOfMass.state.pos = new Physics.vector(
-                numeratorX/denominator,
-                numeratorY/denominator);
+            if (lerp) {
+                com.pos = lerpv( com.pos, new Physics.vector(
+                    sumPosX/sumMass,
+                    sumPosY/sumMass)
+                ,0.5);
+                com.vel = lerpv( com.vel, new Physics.vector(
+                    sumVelX/sumMass,
+                    sumVelY/sumMass)
+                ,0.5);
+            }else{
+                com.pos = new Physics.vector(
+                    sumPosX/sumMass,
+                    sumPosY/sumMass);
+                com.vel = new Physics.vector(
+                    sumVelX/sumMass,
+                    sumVelY/sumMass);
+            }
 
+        }
+        ,subtractCenterOfMass: function(){
+            var b, com=this.center.state;
+            for ( var i = 1, l = this.bodies.length; i < l; i++ ){
+                b = this.bodies[ i ];
+                b.state.pos.vsub( com.pos );
+                b.state.vel.vsub( com.vel );
+                b.initial.x = b.state.pos.x;
+                b.initial.y = b.state.pos.y;
+                b.initial.vel.x = b.state.vel.x;
+                b.initial.vel.y = b.state.vel.y;
+            }
+            com.pos = new Physics.vector(0,0);
+            com.vel = new Physics.vector(0,0);
         }
         ,addVertex: function( x, y ){
 
@@ -417,11 +447,21 @@ define([
             }
         }
         ,reset: function(){
-            var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0;
+            var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0, com = this.center.state;
             last.maxSpeed = 0;
+
+            this.calcCenterOfMass();
+
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 v = b.initial;
+
+                // subtract com
+                v.x -= com.pos.x
+                v.y -= com.pos.y
+                v.vel.x -= com.vel.x;
+                v.vel.y -= com.vel.y;
+
                 b.state.pos.clone( v );
                 b.state.old.pos.clone( v );
                 b.state.vel.clone( v.vel );
@@ -433,6 +473,11 @@ define([
                 b.refreshView();
                 last = b;
             }
+
+            // reset com
+            com.pos.zero();
+            com.vel.zero();
+
             return this;
         }
         ,maxAngularVel: function(){
@@ -729,7 +774,7 @@ define([
                 ,h = el.height
                 ;
 
-            var centerOfMass = this.planetarySystem.center.centerOfMass;
+            var com = this.planetarySystem.center.state.pos;
 
             canvas.width = w;
             canvas.height = h;
@@ -739,8 +784,8 @@ define([
             ctx.drawImage( minuteLabsLogo, 0, h - 96 );
             Draw( ctx )
                 .offset(
-                     - centerOfMass.x,
-                     - centerOfMass.y)
+                     - com.x,
+                     - com.y)
                 .styles({
                     fillStyle: colors.grey,
                     font: '40px "latin-modern-mono-light", Courier, monospace'
@@ -936,14 +981,11 @@ define([
                     }
                 }
                 ,edit: function(){
-                    if (self.edit){
-                        renderer.layer('main').options.follow = null;
-                    }
                     self.emit('edit-velocities', false);
                     self.emit('pause');
+                    planetarySystem.reset();
                     setTimeout(function(){
                         world._meta.interpolateTime = 0;
-                        planetarySystem.reset();
                         tracker.clear();
                         Draw.clear( renderer.layer('paths').ctx );
                         Draw.clear( renderer.layer('paths').hdctx );
@@ -960,7 +1002,6 @@ define([
                     world.pause();
                 }
                 ,unpause: function(){
-                    renderer.layer('main').options.follow = planetarySystem.centerOfMass;
                     world.unpause();
                 }
                 ,remove: function(){
@@ -1027,7 +1068,7 @@ define([
 
             pathRenderer.render = function(){
                 var b, p, grad, c, oldc, j, ll, path = [];
-                var centerOfMass = planetarySystem.centerOfMass.state.pos;
+                //var com = planetarySystem.center.state.pos;
 
                 if ( self.edit ){
                     return;
@@ -1095,7 +1136,7 @@ define([
                     ,int = scratch.vector()
                     ,t = renderer.interpolateTime || 0
                     ,ang
-                    ,centerOfMass = planetarySystem.centerOfMass.state.pos
+                    ,com = planetarySystem.center.state.pos
                     ;
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
@@ -1108,10 +1149,8 @@ define([
                         .vadd( center )
                         ;
 
-                    if (!self.edit){
-                        v.vsub( centerOfMass );
-                        int.vsub( centerOfMass );
-                    }
+                    v.vsub( com );
+                    int.vsub( com );
 
                     Draw
                         .line( center.x + int.x, center.y + int.y, v.x, v.y )
@@ -1129,7 +1168,7 @@ define([
             };
 
             // follow the center of mass
-            renderer.layer('main').options.follow = planetarySystem.centerOfMass;
+            renderer.layer('main').options.follow = planetarySystem.center;
 
             // add some fun interaction
             var attractor = Physics.behavior('attractor', {
@@ -1146,6 +1185,10 @@ define([
 
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
+                if (self.edit){
+                    throttle( planetarySystem.calcCenterOfMass(true) );
+                    throttle( planetarySystem.subtractCenterOfMass() );
+                }
                 world.step( time );
                 world.render();
             });
