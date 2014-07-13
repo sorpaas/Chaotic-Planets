@@ -783,6 +783,19 @@ define([
             canvas.height = h;
             ctx.fillStyle = colors.deepGreyDark;
             ctx.fillRect( 0, 0, w, h );
+
+            var imgWidth=5100, imgHeight=3300;
+            var imgScale = Math.max( w/imgWidth, h/imgHeight );
+            Draw( ctx )
+                .image(
+                    "/library/images/nightsky.png"
+                    ,w/2
+                    ,h/2
+                    ,imgScale * imgWidth
+                    ,imgScale * imgHeight
+                    ,ctx
+                    );
+
             ctx.drawImage( el, 0, 0 );
             ctx.drawImage( minuteLabsLogo, 0, h - 96 );
             Draw( ctx )
@@ -1331,6 +1344,8 @@ define([
 
 
             self.world = Physics( { timestep: 4 }, self.initPhysics.bind( self ) );
+
+            Draw.preload('/library/images/nightsky.png');
         }
 
     }, ['events']);
