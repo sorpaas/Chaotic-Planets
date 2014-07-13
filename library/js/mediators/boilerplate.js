@@ -1018,7 +1018,6 @@ define([
                 first.mass = 10;
                 first.state.vel.set( 0, 0.15 );
                 first.initial.vel.y = 0.15;
-                first.path = false;
                 planetarySystem.addVertex( 240, 0 );
             }
 
