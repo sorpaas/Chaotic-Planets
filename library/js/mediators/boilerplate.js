@@ -457,8 +457,8 @@ define([
                 v = b.initial;
 
                 // subtract com
-                v.x -= com.pos.x
-                v.y -= com.pos.y
+                v.x -= com.pos.x;
+                v.y -= com.pos.y;
                 v.vel.x -= com.vel.x;
                 v.vel.y -= com.vel.y;
 
