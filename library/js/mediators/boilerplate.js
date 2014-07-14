@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'require',
     'hammer.jquery',
     'modules/data-url-to-blob',
     'moddef',
@@ -17,6 +18,7 @@ define([
     'raf'
 ], function(
     $,
+    require,
     _hjq,
     dataURLtoBlob,
     M,
@@ -817,7 +819,7 @@ define([
             var imgScale = Math.max( w/imgWidth, h/imgHeight );
             Draw( ctx )
                 .image(
-                    "/library/images/nightsky.png"
+                    require.toUrl('../../images/nightsky.png')
                     ,w/2
                     ,h/2
                     ,imgScale * imgWidth
@@ -1374,7 +1376,7 @@ define([
 
             self.world = Physics( { timestep: 4 }, self.initPhysics.bind( self ) );
 
-            Draw.preload('/library/images/nightsky.png');
+            Draw.preload(require.toUrl('../../images/nightsky.png'));
         }
 
     }, ['events']);
