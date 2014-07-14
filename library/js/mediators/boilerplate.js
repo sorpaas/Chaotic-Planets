@@ -14,6 +14,8 @@ define([
     'physicsjs/behaviors/interactive',
     'physicsjs/behaviors/newtonian',
     'physicsjs/behaviors/body-impulse-response',
+    'physicsjs/behaviors/body-collision-detection',
+    'physicsjs/behaviors/sweep-prune',
     'physicsjs/bodies/circle',
     'raf'
 ], function(
@@ -878,6 +880,45 @@ define([
                 planetarySystem.calcCenterOfMass();
             });
 
+            world.on('collisions:detected', function(data){
+                var c, b, bodies, bodyA, bodyB, x, y, mass, vx, vy, color;
+
+                for (var i = 0, l = data.collisions.length; i < l; i++){
+                    c = data.collisions[ i ];
+                    bodies = planetarySystem.bodies;
+                    bodyA = c.bodyA;
+                    bodyB = c.bodyB;
+
+                    // combine location, mass, velocity, color
+                    x = (bodyA.state.pos.x + bodyB.state.pos.x)/2;
+                    y = (bodyA.state.pos.y + bodyB.state.pos.y)/2;
+                    mass = bodyA.mass + bodyB.mass;
+                    vx = (bodyA.mass * bodyA.state.vel.x + bodyB.mass * bodyB.state.vel.x) / (bodyA.mass + bodyB.mass);
+                    vy = (bodyA.mass * bodyA.state.vel.y + bodyB.mass * bodyB.state.vel.y) / (bodyA.mass + bodyB.mass);
+                    color = chroma.interpolate( 
+                        chroma.hex( bodyA.color() ), 
+                        chroma.hex( bodyB.color() ), 
+                        0.5, 'hsv' ).hex();
+
+                    // combine mass, velocity, color; then add body
+                    b = planetarySystem.addVertex( x, y );
+                    b.mass = mass;
+                    b.state.vel.set( vx, vy );
+                    b.initial.vel.x = vx;
+                    b.initial.vel.y = vy;
+                    b.color( color );
+                    b.refreshView();
+                    tracker.applyTo( planetarySystem.bodies );
+
+                    // remove old
+                    bodies.splice( bodies.indexOf(bodyA), 1);
+                    planetarySystem.world.remove( bodyA );
+                    bodies.splice( bodies.indexOf(bodyB), 1);
+                    planetarySystem.world.remove( bodyB );
+
+                }
+            });
+
             self.on({
                 resize: function() {
 
@@ -1225,7 +1266,9 @@ define([
             // add newtonian attraction to the world
             world.add([
                 Physics.behavior('newtonian', { strength: 0.5 })
-                ,Physics.behavior('body-impulse-response')
+                //,Physics.behavior('body-impulse-response')
+                ,Physics.behavior('body-collision-detection')
+                ,Physics.behavior('sweep-prune')
                 ,tracker
             ]);
 
