@@ -31,7 +31,7 @@ define([
     var minuteLabsLogo = new Image();
     minuteLabsLogo.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAAAAADH8yjkAAAKJWlDQ1BpY2MAAHjanZZ3VFTXFofPvXd6oc0wdBh6r1IGEOkdpFdRGGYGGMoAwwzYCyIqEFFEpCmCBAUMGA1FYkUUCwFRAXtAgoASg1FsqGRG1kp8eXnv5eX3xz3f2mfvc/fZe9+1LgAkLz8uLx2WAiCNJ+AHe7rQI6Oi6dh+AAM8wABzAJisrAz/EI9QIJK3uys9S+QE/kWvhwEkXm8ZewXS6eD/kzQrgy8AAAoU8RI2J4sl4jwRp+YIMsT2WRFT41PEDKPEzBclKGJ5MScustFnn0V2EjM7jccWsTjnDHYaW8w9It6RLeSIGPETcX42l5Mj4tsi1koVpnFF/FYcm8ZhZgGAIontAg4rScRmIibxQ4NdRbwUABwp8QuO/4IFnNUC8aVc0zPW8LmJSQK6Hkufbm5ry6B7cXJSOQKBcSCTlcLks+mu6WkZTN4aABbv/Fky4trSRUW2Nre1tja2MDH/olD/dfNvStzbRXoZ9LlnEK3vD9tf+aXXAcCYE9Vm9x+2+AoAOrYBIH/vD5vWIQAkRX1rH/jiPjTxvCQJBBl2pqY5OTkmXA7LRFzQ3/U/Hf6Gvnififi438tDd+MkMIWpArq4bqz01HQhn56VwWRx6MZ/HuJ/HPjXeRgFcxI4fA5PFBEumjIuL1HUbh6bK+Cm8+hc3n9q4j8M+5MW51okSv0nQI01AVIDVID83AdQFCJAYg6Ku/573/zw4SBQtEaoTS7O/WdB/34qXCx+ZHETP8e5BofSWUJ+9uKe+LMEaEAAkoAKFIAq0AR6wBhYABtgD5yAO/ABASAURIFVgAWSQBrggxywHmwB+aAQ7Ab7QCWoAfWgEbSAE6ADnAYXwGVwHdwAQ+A+GAUT4BmYBa/BPARBWIgMUSAFSA3ShgwhC4gBLYPcIT8oGIqC4qBEiAcJofXQVqgQKoEqoVqoEfoWOgVdgK5Cg9BdaAyahn6F3sMITIKpsAqsA5vCDNgZ9oVD4ZVwIpwJr4Xz4F1wOVwHH4Pb4QvwdXgIHoWfwXMIQIgIDVFHjBEG4ooEINFIAsJHNiIFSBlSh7QgXUgvcgsZRWaQdygMioKio4xR9igvVBiKhcpEbUQVoSpRR1HtqB7ULdQYahb1CU1GK6MN0XZob3QkOhGdg85Hl6Eb0G3oS+gh9AT6NQaDoWF0MTYYL0wUJhmzDlOEOYBpxZzHDGLGMXNYLFYBa4h1wAZgmVgBNh9bgT2GPYe9iZ3AvsURcWo4C5wHLhrHw+XiynBNuLO4m7hJ3DxeCq+Nt8MH4Nn4NfhifD2+Cz+An8DPE6QJugQHQighmbCFUE5oIVwiPCC8JBKJGkRbYhCRS9xMLCceJ14hjhHfkWRIBiRXUgxJSNpFOkI6T7pLekkmk3XITuRosoC8i9xIvkh+RH4rQZEwkfCWYEtskqiSaJe4KfFcEi+pLeksuUpyrWSZ5EnJAckZKbyUjpSrFFNqo1SV1CmpEak5aYq0uXSAdJp0kXST9FXpKRmsjI6MuwxbJk/msMxFmXEKQtGkuFJYlK2UesolygQVQ9WlelOTqYXUb6j91FlZGVlL2XDZ1bJVsmdkR2kITYfmTUulFdNO0IZp7+VU5JzlOHI75Vrkbsq9kVeSd5LnyBfIt8oPyb9XoCu4K6Qo7FHoUHioiFI0UAxSzFE8qHhJcUaJqmSvxFIqUDqhdE8ZVjZQDlZep3xYuU95TkVVxVMlQ6VC5aLKjCpN1Uk1WbVU9azqtBpFbZkaV61U7ZzaU7os3ZmeSi+n99Bn1ZXVvdSF6rXq/erzGroaYRq5Gq0aDzUJmgzNBM1SzW7NWS01LX+t9VrNWve08doM7STt/dq92m90dHUidLbrdOhM6crreuuu1W3WfaBH1nPUy9Sr07utj9Fn6KfoH9C/YQAbWBkkGVQZDBjChtaGXMMDhoNGaCNbI55RndGIMcnY2TjbuNl4zIRm4meSa9Jh8txUyzTadI9pr+knMyuzVLN6s/vmMuY+5rnmXea/WhhYsCyqLG4vIS/xWLJpSeeSF5aGlhzLg5Z3rChW/lbbrbqtPlrbWPOtW6ynbbRs4myqbUYYVEYgo4hxxRZt62K7yfa07Ts7azuB3Qm7X+yN7VPsm+ynluou5SytXzruoOHAdKh1GF1GXxa37NCyUUd1R6ZjneNjJ00ntlOD06SzvnOy8zHn5y5mLnyXNpc3rnauG1zPuyFunm4Fbv3uMu5h7pXujzw0PBI9mj1mPa0813me90J7+Xrt8RrxVvFmeTd6z/rY+Gzw6fEl+Yb4Vvo+9jPw4/t1+cP+Pv57/R8s117OW94RAAK8A/YGPAzUDcwM/D4IExQYVBX0JNg8eH1wbwglJDakKeR1qEtocej9ML0wYVh3uGR4THhj+JsIt4iSiNFI08gNkdejFKO4UZ3R2Ojw6IbouRXuK/atmIixismPGV6pu3L1yqurFFelrjoTKxnLjD0Zh46LiGuK+8AMYNYx5+K946vjZ1murP2sZ2wndil7muPAKeFMJjgklCRMJTok7k2cTnJMKkua4bpyK7kvkr2Sa5LfpASkHElZSI1IbU3DpcWlneLJ8FJ4Pemq6avTBzMMM/IzRjPtMvdlzvJ9+Q1ZUNbKrE4BVfQz1SfUE24TjmUvy67KfpsTnnNytfRq3uq+NQZrdq6ZXOux9ut1qHWsdd3r1ddvWT+2wXlD7UZoY/zG7k2am/I2TWz23Hx0C2FLypYfcs1yS3JfbY3Y2pWnkrc5b3yb57bmfIl8fv7IdvvtNTtQO7g7+ncu2Vmx81MBu+BaoVlhWeGHIlbRta/Mvyr/amFXwq7+Yuvig7sxu3m7h/c47jlaIl2ytmR8r//e9lJ6aUHpq32x+66WWZbV7CfsF+4fLfcr76zQqthd8aEyqXKoyqWqtVq5emf1mwPsAzcPOh1sqVGpKax5f4h76E6tZ217nU5d2WHM4ezDT+rD63u/Znzd2KDYUNjw8QjvyOjR4KM9jTaNjU3KTcXNcLOwefpYzLEb37h909li3FLbSmstPA6OC48//Tbu2+ETvie6TzJOtnyn/V11G6WtoB1qX9M+25HUMdoZ1Tl4yudUd5d9V9v3Jt8fOa1+uuqM7Jnis4SzeWcXzq09N3c+4/zMhcQL492x3fcvRl683RPU03/J99KVyx6XL/Y695674nDl9FW7q6euMa51XLe+3t5n1df2g9UPbf3W/e0DNgOdN2xvdA0uHTx70/HmhVtuty7f9r59fWj50OBw2PCdkZiR0TvsO1N3U+++uJd9b/7+5gfoBwUPpR6WPVJ+VPej/o+to9ajZ8bcxvoehzy+P84af/ZT1k8fJvKekJ+UTapNNk5ZTJ2e9pi+8XTF04lnGc/mZ/J/lv65+rne8+9+cfqlbzZyduIF/8XCr0UvFV4eeWX5qnsucO7R67TX828K3iq8PfqO8a73fcT7yfmcD9gP5R/1P3Z98v30YCFtYeE394Tz+5gPoRwAAAAJcEhZcwAABXIAAA3XATgWVUIAAACKelRYdFJhdyBwcm9maWxlIHR5cGUgZXhpZgAAeNptTtsNgEAI+2cKRwCOe42DniZu4PjeS+OpTUhTQltgPfYNpgIyAcT64KJzmCFJEiIrNoQ8Fok4s+k76oMPXRkai2bDXI3DgWUkDq8gri3exWJ8BVnFAbemH2208/PLGqStRQazzIu248/+qoMT8X06qHO8fMMAAAl0SURBVGje5ZppVFRHFoAfW4OA2IgguOBKjA4oCriPCyPRGI8SoiaOJJPBoxMd52hmjE40vIcLMBjZFBcEGeKOeNQmuCEzAu4iCoOKKMimA7I0NNBAN91d8+rtNP2gWs05c07qT7+uuvd+9arq3rpV3Rj4hQv2KwNoVW1tat0vAtA1P5FFbVy5yM9v8arQCyWq9wyQX9vyWxcJxhbJsGXHqt8fQFceNd0G0ysWE6PREL0Dan4ca4oZKGaTUzveA6AzfboZJlJs11W9M0D+gxQTLyYz770joGypGdZjcbv4ToCnc7DeypBz7wAontmrfQwb/PNbA14vQLCPYaNuvSVAuRrJPoZNKXk7QJyl/pqxGewxw/ejuV6u1l0bVra8DSDXtYsRyZiv4q4/r21u61DKS6/tnCV0bUnsWwBalwnN2y05WaURNisu+gtew/WB8YCUPoIefnK1rXsPTrjzEl8ojQXIBR4wZJ/CoEyRPxejrFONBZziZ9grW2yHqVtjzgrNkRsHUC7i7M96Ij6+TavZd5AcMw5w0561792DfQBqP2Xl5ilERAwDtrF6Q3NAj+XZBEbQ5pIxgMapjJrlAdBLOdePEV2lMSxgEHBHymgF9OSjVFGvY0RHlhoBiGOUBmT3Zp8M6aNpWbOj6ABdEAP4o7p3ANjJCmuRAYrpTIDIRLAPStxoaY8aZEDZcFrFtxkFADYz3TG8LxgC3GfmeDeSfXCnPx3NE5ABV6woDekdNICS2fn+hgxIoVMJrwY0AIhi1nQnKiDZhFL4UgvQyj06sMwwOGWGAEk0IAzRPpD70Muo1rg3MDuNCmD8xu01KuAUFYRturmxpkHE8ehJGFmJCkijTgID8vXrT3iGkPl0KZ5G7kBNaf/hG2QWUGF0FSrgOrWfD36hV904DeuXAdRfY26lQLPFbFIF13KPcpxxNaiARw5QfngZX1NdSgbjImcf6RrwYtjYvhdA4RAfqYxrfuZC7U1yVAAdKgSAitmuR3Tgvt0m33EN16SbHA6C/QP2OiZz7eWUgl87KkDuBeUHPecqUiwkQ+6Du7ahf7d9cKJ/nFMUCPROsz/Dd2AEVAjUogJUi6F8/zyuIkmywi5Ily/Fj5mfTnQ87LCvxeurk1J+lT0fDBW2AlQA2Ajl+1zjvl+wCA9wKiwftDbLKiLRcY/d8bJBoYTrS679AXRlkyPogHgqOvJjnG//p5Pmu5smLMy1/+tJh7V2mbf7JS4QDDm1rm2z0QHZtpCAc98bfTwfuv1OETDm5qCga/Yezs9S7WNcBJGEcrRRFeiAqg+gxud8nrDJ6mKQY1F432TXwKLBmE9ztNNyZ36KAHWSWNCODlBR+dTEeq7i3zbfxJun3LRb4RzUOg9bD763tAvkw0bzDCi+DaADQATUcOD72DLf5ZD9pubZ1qabwTrsIFiDudzmpYsGwRQqzRhAjh2pYprEV5zts3DEx53Jlti+W6NM3Hd4WMYIMuKzMBSNKjcGUO8NX2E1b0T5hcTSva5hCvahy/Bov4Fmc4SbC7Xrf642BgA2QZ0Jb/iKxx6YU2ai9Dfzfp8DFAWTlgi2x+bZcFHHA6MAmXCh2v5LOGrumKNkzB0VtNwyNUCQiRY4wdj71DiAvPvCOGw6ZQuzRbRM8xcAEuD+tFRlHIBeR9OEAVgm4WKBcuYifog0gXB/TRaxIwp4MpRU6ysco0yr/exj26z5fIcroVeOEVlDFEBrKLPXfKOfS92wjmYf2+fO5d32PDzObdCJA159u+Lgq+4NN2BC6C5IFG7bRLGPHX4zWrn69TAJFD8IYSCMHEHPY90OwqqVpKLFcb7ilk0M+6he6NXEPtfAQ9Tith4AiTBRtF7bLanJgq/gzw9FlvVB9rFzydg69vkSeWK3TAE9AN5QK9JkfrFei3oNjEd8yLnSh3sdzVJXLjZvIKVmGsxitTU3fi6Dkyyjz3Fz9G9lCuBWvpGbvfO23PWZNtCBPd1Wj8cwc0OJe1v2Bo++ZgsaSID6L3R2vFj/IjSCHLyR3Isds+dvAFdbsbN6gUz1Z9R1M69M96e6Pa4K+sGLsfQJYpXembLhY2EKHCvYhL/FmFHXwnH88lFd18xdnfWZLX0MxjspR4ulDwQWO3mP6GwsyT4aQGbBHmzG+cNk/jC/AwulH8rhAc3cYcLyHecK6xmKtnCdAz0mfcPbaE+umUxXSGG/OuXPryd9v3zyUFsqBzZlb5uCAnlnOogto6PzT9x1iIXTxOXEqbvldfnbhjFV9gfUbKiIZ+Q+OJ64OcB7iI3wLnkivYA7PtnLj8FlyVBqljs+w7oUs34jxg80Yb4M/EkDWEC1N9sPE0y/MK9Q7SvY5SvH0VnTo4GYaHFOod6YCXbRJuKS46k1f32NIGvQZZ+iYsVWcS2n0/SIMoCyD8VFTXZBiWID9zr/dRdVkiYxM8aG6x76go0Q260KHcVUJBHsgmQBD53FAf3EYqXiz6Od+hgc3D9w0ZYFqFfq96H/MHev8W4jRnn6HzX0Q4SyhoygHa8fZxxY7zvMSk95eCHQB4BUC67ZwmX6qkhZXlmtvO51RVW9ClSlP1B03VFa8xIjkpljq05Zejl0yUjhRTEBugMq6Xhh6jj7u9SnXc3pzm3bHne1pIU5YOjaX2XH78CJ4AyBjKo87bupdox970oDABBtiZk4f7o/38AlV34ETuChcSmZ9wsKH96QJfyDIEJCQoKvdpXSNeZs9YSJ/EDhjT8PUCZ8HV5g+GcfXcmRECKEwHFi+3bqgzRPEIe7nyp1NSdWTPpIpjUIIJuBaGm5uS+EsssUAt9ztdGgpFre9ZoZ+afGxrvJESE4U3btz6jWov3kiATQFefU6IDqdW768YRD8f88m/WiVfPyXGolii4SoHlfcNSlCphraVXtHaSPKovOhOPBSe0IukgA1RmCwMOTMgoqauXymtJc2YGd5ITgca0Iumhz0JIeSi5UfHvYj5GREbuo6SbwiLsos4A4yZ1Pk3dRZgnKBQic2COrRLoRQ15FqmLZ/jDoBDgesiv6xJ1axAs3RIA6N69Jq6zMz8m4dCU772WTSqFEU0QF1O4mYmWPmRsvraLofMyhUjRN1DnIDgvGd0Qmnr2cmZF2NJZcRMFn0MYIdQ60TxNCcIJxZDjbwenv0ZOp0nLvSBgMdGQh53nPBcRrW2P+9tBelnU6PiYycm/i+dw3GkQlI/+4oWlrqq9XdBjx14r/s3+G/CoB/wNwRUcYmr2HoQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNC0wMi0xOFQxNToyMzozMy0wNTowMMtCwMQAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTQtMDItMThUMTU6MjM6MzMtMDU6MDC6H3h4AAAAEXRFWHRqcGVnOmNvbG9yc3BhY2UAMix1VZ8AAAAgdEVYdGpwZWc6c2FtcGxpbmctZmFjdG9yADF4MSwxeDEsMXgx6ZX8cAAAAABJRU5ErkJggg==';
 
-    var vFactor = 200; // scale the velocity rendering
+    var vFactor = 400; // scale the velocity rendering
 
     function clearArray(arr){
         var l = arr.length;
@@ -343,6 +343,15 @@ define([
         return v.set( 1, 0 ).rotate( Math.random() * Math.PI * 2 );
     }
 
+    function closestNeighbourDist( pos, bodies ){
+        var dist = 100000;
+        var i = bodies.length;
+        while ( i-- > 0 ){
+            dist = Math.min( dist, bodies[ i ].state.pos.dist( pos ) );
+        }
+        return dist;
+    }
+
     var PlanetarySystem = function( world, x, y, g ){
         this.init( world, x, y, g );
     };
@@ -358,7 +367,7 @@ define([
 
             this.g = g;
 
-            this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
+            this.colors = [ colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
 
             this.world = world;
             this.bodies = [ this.center ];
@@ -428,7 +437,7 @@ define([
                 ,y: y
                 ,radius: 15
                 ,initial: v
-                ,path: (l !== 1)
+                ,path: true
                 ,maxSpeed: 1
             });
 
@@ -457,8 +466,8 @@ define([
                 v = b.initial;
 
                 // subtract com
-                v.x -= com.pos.x
-                v.y -= com.pos.y
+                v.x -= com.pos.x;
+                v.y -= com.pos.y;
                 v.vel.x -= com.vel.x;
                 v.vel.y -= com.vel.y;
 
@@ -516,25 +525,48 @@ define([
 
             return E;
         }
-        ,randomize: function( maxLen ){
-            maxLen = maxLen || 100;
+        ,randomize: function( maxDist ){
+            maxDist = maxDist || 100;
+            var minDist = 100;
             var n = ((4 * Math.random()) + 2) | 0;
             var dir = Physics.vector( 1, 0 );
-            var last = this.center;
+            var center = this.center;
+            var vertex;
             var i;
+            var maxMass = 10;
+            var angVel = ( Math.random() > 0.5 ? 1 : -1 ) * 10;
+            var vref;
+
             // clear
             while ( this.bodies.length > 1 ){
                 this.removeVertex();
             }
 
             for ( i = 0; i < n; i++ ){
-                randomDir( dir ).mult( Math.random() * maxLen + 20 ).vadd( last.state.pos );
-                last = this.addVertex( dir.x, dir.y );
-                randomDir( dir ).mult( Math.random() * 0.5 );
-                last.mass = Math.random() * 10;
-                last.initial.vel.x = dir.x;
-                last.initial.vel.y = dir.y;
-                last.state.vel.clone( dir );
+                randomDir( dir ).mult( Math.random() * (maxDist - minDist) + minDist );
+
+                if ( closestNeighbourDist( dir, this.bodies ) < 50 ){
+                    // try again
+                    i--;
+
+                } else {
+
+                    vertex = this.addVertex( dir.x, dir.y );
+                    vertex.mass = Math.random() * maxMass;
+
+                }
+            }
+
+            this.reset();
+
+            for ( i = 1, n = this.bodies.length; i < n; i++ ){
+                vertex = this.bodies[ i ];
+                vref = dir.clone( vertex.state.pos ).perp().mult( angVel / dir.normSq()  );
+                // randomDir( dir ).mult( Math.random() * 0.2 * vref.norm() ).vadd( vref );
+
+                vertex.initial.vel.x = dir.x;
+                vertex.initial.vel.y = dir.y;
+                vertex.state.vel.clone( dir );
             }
         }
 
@@ -780,6 +812,19 @@ define([
             canvas.height = h;
             ctx.fillStyle = colors.deepGreyDark;
             ctx.fillRect( 0, 0, w, h );
+
+            var imgWidth=5100, imgHeight=3300;
+            var imgScale = Math.max( w/imgWidth, h/imgHeight );
+            Draw( ctx )
+                .image(
+                    "/library/images/nightsky.png"
+                    ,w/2
+                    ,h/2
+                    ,imgScale * imgWidth
+                    ,imgScale * imgHeight
+                    ,ctx
+                    );
+
             ctx.drawImage( el, 0, 0 );
             ctx.drawImage( minuteLabsLogo, 0, h - 96 );
             Draw( ctx )
@@ -852,7 +897,7 @@ define([
                     renderer.layer('vectors').el.style.zIndex = on ? 3 : 1;
                 }
                 ,randomize: function( e ){
-                    planetarySystem.randomize( viewHeight / 6 );
+                    planetarySystem.randomize( Math.min(viewHeight, viewWidth)*0.25 );
                     planetarySystem.reset();
                     Draw.clear( renderer.layer('paths').ctx );
                     Draw.clear( renderer.layer('paths').hdctx );
@@ -1018,7 +1063,6 @@ define([
                 first.mass = 10;
                 first.state.vel.set( 0, 0.15 );
                 first.initial.vel.y = 0.15;
-                first.path = false;
                 planetarySystem.addVertex( 240, 0 );
             }
 
@@ -1329,6 +1373,8 @@ define([
 
 
             self.world = Physics( { timestep: 4 }, self.initPhysics.bind( self ) );
+
+            Draw.preload('/library/images/nightsky.png');
         }
 
     }, ['events']);

@@ -43,7 +43,7 @@
 .minicolors-swatch {
   position: absolute;
   vertical-align: middle;
-  background: url('../images/jquery.minicolors.png?1400628395') -80px 0;
+  background: url('../images/jquery.minicolors.png?1405276515') -80px 0;
   border: solid 1px #ccc;
   cursor: text;
   padding: 0;
@@ -121,7 +121,7 @@
   left: 1px;
   width: 150px;
   height: 150px;
-  background: url('../images/jquery.minicolors.png?1400628395') -120px 0;
+  background: url('../images/jquery.minicolors.png?1405276515') -120px 0;
   cursor: crosshair;
 }
 
@@ -142,7 +142,7 @@
 
 /* line 93, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/_minicolors.scss */
 .minicolors-slider-saturation .minicolors-grid-inner {
-  background: url('../images/jquery.minicolors.png?1400628395') -270px 0;
+  background: url('../images/jquery.minicolors.png?1405276515') -270px 0;
 }
 
 /* line 97, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/_minicolors.scss */
@@ -168,7 +168,7 @@
   left: 152px;
   width: 20px;
   height: 150px;
-  background: white url('../images/jquery.minicolors.png?1400628395') 0 0;
+  background: white url('../images/jquery.minicolors.png?1405276515') 0 0;
   cursor: row-resize;
 }
 
@@ -434,14 +434,15 @@ html, body, #wrap-outer {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background: black;
+  background: url("../images/nightsky.png") center center fixed;
+  background-size: cover;
 }
-/* line 83, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 84, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #viewport canvas {
   position: absolute;
 }
 
-/* line 87, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 88, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 .pjs-meta {
   position: absolute;
   bottom: 0;
@@ -450,7 +451,7 @@ html, body, #wrap-outer {
   z-index: 100;
 }
 
-/* line 95, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 96, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls {
   position: absolute;
   bottom: 0;
@@ -458,14 +459,14 @@ html, body, #wrap-outer {
   z-index: 100;
   padding: 1em;
 }
-/* line 103, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 104, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .above {
   position: absolute;
   bottom: 60px;
   left: 1em;
   width: 160px;
 }
-/* line 110, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 111, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-type {
   display: none;
   position: absolute;
@@ -485,55 +486,55 @@ html, body, #wrap-outer {
   -o-transform: translateZ(0);
   transform: translateZ(0);
 }
-/* line 121, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 122, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-type label {
   float: left;
   color: #1a1a1a;
   margin-right: 1em;
   margin-bottom: 1em;
 }
-/* line 128, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 129, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-type .radio-group {
   float: left;
   width: 10.5em;
 }
-/* line 131, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 132, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-type .radio-group > a {
   margin-right: 2em;
 }
-/* line 134, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 135, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-type .radio-group > a:last-child {
   margin-right: 0;
 }
-/* line 141, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 142, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls .edit-group {
   display: none;
   width: 300px;
   bottom: 150px;
 }
-/* line 151, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 152, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls.state-add .ctrl-pause,
 #controls.state-add .ctrl-download,
 #controls.state-add .ctrl-edit,
 #controls.state-add .ctrl-edit-velocities {
   display: none;
 }
-/* line 158, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 159, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls.edit .ctrl-pause,
 #controls.edit .ctrl-download {
   display: none;
 }
-/* line 162, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 163, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls.edit .edit-group,
 #controls.edit .edit-type {
   display: block;
 }
-/* line 168, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 169, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #controls.state-edit-velocities .edit-group {
   display: none;
 }
 
-/* line 176, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 177, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu {
   display: none;
   position: absolute;
@@ -550,12 +551,12 @@ html, body, #wrap-outer {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 188, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 189, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .title {
   margin: 0;
   padding: 0 0 1em;
 }
-/* line 193, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 194, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu label {
   clear: left;
   float: left;
@@ -565,31 +566,31 @@ html, body, #wrap-outer {
   color: #1a1a1a;
   text-align: left;
 }
-/* line 203, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 204, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .ctrl-mass {
   width: 4em;
   float: left;
 }
-/* line 208, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 209, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu #ctrl-path {
   float: left;
   margin-top: 0.5em;
 }
-/* line 213, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 214, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .slider {
   margin-left: 12em;
   margin-right: 0;
 }
-/* line 229, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 230, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .minicolors-theme-default .minicolors-swatch {
   top: 0.2em;
   left: 0.2em;
 }
-/* line 234, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 235, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .minicolors-position-left .minicolors-panel {
   bottom: 26px;
 }
-/* line 238, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 239, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .ctrl-close {
   position: absolute;
   top: -0.6em;
@@ -609,21 +610,21 @@ html, body, #wrap-outer {
   -o-border-radius: 50%;
   border-radius: 50%;
 }
-/* line 254, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 255, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu input {
   width: 8em;
 }
-/* line 258, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 259, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .minicolors {
   float: left;
   margin-bottom: 0.4em;
 }
-/* line 262, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 263, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu .color {
   outline: none;
   border-color: #c8c8c8;
 }
-/* line 268, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
+/* line 269, /Users/nbartzokas/Dropbox/Code/minutelabs/Chaotic-Planets/library/styles/site.scss */
 #ctx-menu button,
 #ctx-menu .btn {
   margin-top: 1em;
