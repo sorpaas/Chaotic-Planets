@@ -343,6 +343,15 @@ define([
         return v.set( 1, 0 ).rotate( Math.random() * Math.PI * 2 );
     }
 
+    function closestNeighbourDist( pos, bodies ){
+        var dist = 100000;
+        var i = bodies.length;
+        while ( i-- > 0 ){
+            dist = Math.min( dist, bodies[ i ].state.pos.dist( pos ) );
+        }
+        return dist;
+    }
+
     var PlanetarySystem = function( world, x, y, g ){
         this.init( world, x, y, g );
     };
@@ -358,7 +367,7 @@ define([
 
             this.g = g;
 
-            this.colors = [ '#fff', colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
+            this.colors = [ colors.blueFire, colors.red, colors.yellow, colors.green, colors.grey, colors.blue ];
 
             this.world = world;
             this.bodies = [ this.center ];
@@ -428,7 +437,7 @@ define([
                 ,y: y
                 ,radius: 15
                 ,initial: v
-                ,path: (l !== 1)
+                ,path: true
                 ,maxSpeed: 1
             });
 
@@ -516,14 +525,17 @@ define([
 
             return E;
         }
-        ,randomize: function( maxLen ){
-            maxLen = maxLen || 100;
+        ,randomize: function( maxDist ){
+            maxDist = maxDist || 100;
+            var minDist = 100;
             var n = ((4 * Math.random()) + 2) | 0;
             var dir = Physics.vector( 1, 0 );
-            var last = this.center;
+            var center = this.center;
+            var vertex;
             var i;
-            var maxVel = 0.1;
             var maxMass = 10;
+            var angVel = ( Math.random() > 0.5 ? 1 : -1 ) * 10;
+            var vref;
 
             // clear
             while ( this.bodies.length > 1 ){
@@ -531,13 +543,30 @@ define([
             }
 
             for ( i = 0; i < n; i++ ){
-                randomDir( dir ).mult( Math.random() * maxLen + 20 ).vadd( last.state.pos );
-                last = this.addVertex( dir.x, dir.y );
-                randomDir( dir ).mult( Math.random() * maxVel );
-                last.mass = Math.random() * maxMass;
-                last.initial.vel.x = dir.x;
-                last.initial.vel.y = dir.y;
-                last.state.vel.clone( dir );
+                randomDir( dir ).mult( Math.random() * (maxDist - minDist) + minDist );
+
+                if ( closestNeighbourDist( dir, this.bodies ) < 50 ){
+                    // try again
+                    i--;
+
+                } else {
+
+                    vertex = this.addVertex( dir.x, dir.y );
+                    vertex.mass = Math.random() * maxMass;
+
+                }
+            }
+
+            this.reset();
+
+            for ( i = 1, n = this.bodies.length; i < n; i++ ){
+                vertex = this.bodies[ i ];
+                vref = dir.clone( vertex.state.pos ).perp().mult( angVel / dir.normSq()  );
+                // randomDir( dir ).mult( Math.random() * 0.2 * vref.norm() ).vadd( vref );
+
+                vertex.initial.vel.x = dir.x;
+                vertex.initial.vel.y = dir.y;
+                vertex.state.vel.clone( dir );
             }
         }
 
@@ -868,7 +897,7 @@ define([
                     renderer.layer('vectors').el.style.zIndex = on ? 3 : 1;
                 }
                 ,randomize: function( e ){
-                    planetarySystem.randomize( viewHeight / 6 );
+                    planetarySystem.randomize( Math.min(viewHeight, viewWidth)*0.25 );
                     planetarySystem.reset();
                     Draw.clear( renderer.layer('paths').ctx );
                     Draw.clear( renderer.layer('paths').hdctx );
