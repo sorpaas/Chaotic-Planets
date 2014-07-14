@@ -9,11 +9,10 @@ define([
     'canvas-draw',
     'physicsjs',
     'physicsjs/renderers/canvas',
-    'physicsjs/behaviors/constant-acceleration',
-    'physicsjs/behaviors/attractor',
     'physicsjs/behaviors/interactive',
     'physicsjs/behaviors/newtonian',
-    'physicsjs/behaviors/body-impulse-response',
+    'physicsjs/behaviors/body-collision-detection',
+    'physicsjs/behaviors/sweep-prune',
     'physicsjs/bodies/circle',
     'raf'
 ], function(
@@ -277,14 +276,16 @@ define([
                 for ( var i = 0, l = bodies.length; i < l; ++i ){
 
                     body = bodies[ i ];
-                    list = body.positionBuffer || (body.positionBuffer = []);
-                    if ( list.length > 100 ){
-                        list.splice( 0, list.length - 100 );
+                    if ( !body.disabled ){
+                        list = body.positionBuffer || (body.positionBuffer = []);
+                        if ( list.length > 100 ){
+                            list.splice( 0, list.length - 100 );
+                        }
+                        list.push(
+                            body.state.old.pos.x - com.x,
+                            body.state.old.pos.y - com.y
+                            );
                     }
-                    list.push(
-                        body.state.old.pos.x - com.x,
-                        body.state.old.pos.y - com.y
-                        );
                 }
             }
         };
@@ -360,6 +361,7 @@ define([
 
     PlanetarySystem.prototype = {
         init: function( world, x, y, g ){
+            var self = this;
             this.center = Physics.body('circle', {
                 x: x
                 ,y: y
@@ -373,6 +375,31 @@ define([
 
             this.world = world;
             this.bodies = [ this.center ];
+
+            // init collision actions
+            world.on('collisions:detected', function( data ){
+                var cols = data.collisions
+                    ,col
+                    ;
+
+                for ( var i = 0, l = cols.length; i < l; i++ ){
+                    col = cols[ i ];
+                    self.merge( col.bodyA, col.bodyB );
+                }
+            });
+        }
+        // merge two bodies into one
+        ,merge: function( bodyA, bodyB ){
+
+            // remove bodyB from world
+            this.world.remove( bodyB );
+            bodyB.disabled = true;
+            bodyA.oldMass = bodyA.mass;
+            // conservation of momentum
+            bodyA.state.vel.mult( bodyA.mass ).vadd( bodyB.state.vel.mult(bodyB.mass) );
+            bodyA.mass += bodyB.mass;
+            bodyA.state.vel.mult( 1/bodyA.mass );
+            bodyA.refreshView();
         }
         ,calcCenterOfMass: function(lerp){
 
@@ -390,14 +417,17 @@ define([
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                sumPosX += b.mass * b.state.pos.x;
-                sumPosY += b.mass * b.state.pos.y;
-                sumVelX += b.mass * b.state.vel.x;
-                sumVelY += b.mass * b.state.vel.y;
-                sumMass += b.mass;
+                if ( !b.disabled ){
+                    sumPosX += b.mass * b.state.pos.x;
+                    sumPosY += b.mass * b.state.pos.y;
+                    sumVelX += b.mass * b.state.vel.x;
+                    sumVelY += b.mass * b.state.vel.y;
+                    sumMass += b.mass;
+                }
             }
 
             if (lerp) {
+                // TODO: not necessary to create new vectors. reuse the current com.pos and com.vel
                 com.pos = lerpv( com.pos, new Physics.vector(
                     sumPosX/sumMass,
                     sumPosY/sumMass)
@@ -437,7 +467,7 @@ define([
             var b = Physics.body('circle', {
                 x: x
                 ,y: y
-                ,radius: 15
+                ,radius: 3
                 ,initial: v
                 ,path: true
                 ,maxSpeed: 1
@@ -476,6 +506,10 @@ define([
                 b.state.pos.clone( v );
                 b.state.old.pos.clone( v );
                 b.state.vel.clone( v.vel );
+                if ( b.oldMass ){
+                    b.mass = b.oldMass;
+                    b.oldMass = 0;
+                }
                 // set the max anticipated speed based
                 r = last.state.pos.dist( b.state.pos );
                 h += r;
@@ -483,6 +517,8 @@ define([
                 b.maxSpeed *= 1.3 * lerp(0.5, 1.4, Math.abs(last.mass - b.mass)/(last.mass + b.mass)) / i; // multiply by a fudge factor
                 b.refreshView();
                 last = b;
+                b.disabled = false;
+                this.world.add( b ); // duplicate adding check is built into physicsjs
             }
 
             // reset com
@@ -874,7 +910,7 @@ define([
             // planetarySystem
             var planetarySystem = self.planetarySystem = new PlanetarySystem( world, 0, 0, g );
 
-            world.on('integrate:velocities', function(){
+            world.on('integrate:positions', function(){
                 planetarySystem.calcCenterOfMass();
             });
 
@@ -1077,8 +1113,11 @@ define([
                 return Math.sqrt( x*x + y*y );
             }
 
-            renderer.layer('main').options.zIndex = 2;
-            renderer.layer('main').options.offset = center;
+            renderer.layer('main').options({
+                zIndex: 2,
+                offset: center,
+                follow: planetarySystem.center
+            });
             var oldrender = renderer.layer('main').render;
             renderer.layer('main').render = function(){
                 var b, p, points = [];
@@ -1133,7 +1172,7 @@ define([
                     if (!p){ continue; }
 
                     ll = p.length;
-                    if ( b.path && ll >= 4 ){
+                    if ( !b.disabled && b.path && ll >= 4 ){
 
                         oldc = b.oldColor;
                         c = b.colorScale( b.state.vel.norm() );
@@ -1182,32 +1221,36 @@ define([
                     ,int = scratch.vector()
                     ,t = renderer.interpolateTime || 0
                     ,ang
-                    ,com = planetarySystem.center.state.pos
+                    ,com = planetarySystem.center.state
                     ;
 
                 Draw( this.ctx ).offset( 0, 0 ).styles( vectorStyles ).clear();
 
                 for ( var i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
                     b = planetarySystem.bodies[i];
-                    v.clone( b.state.vel )
-                        .mult( vFactor )
-                        .vadd( int.clone(b.state.vel).mult(t).vadd(b.state.pos) )
-                        .vadd( center )
-                        ;
 
-                    v.vsub( com );
-                    int.vsub( com );
+                    if ( !b.disabled ){
+                        // put both velocity vector direction and position in terms of com
+                        v.clone( b.state.vel ).vsub( com.vel );
+                        ang = v.angle();
+                        v.mult( vFactor )
+                            .vadd( int.clone(b.state.vel).mult(t).vadd(b.state.pos) )
+                            .vadd( center )
+                            ;
 
-                    Draw
-                        .line( center.x + int.x, center.y + int.y, v.x, v.y )
-                        ;
+                        v.vsub( com.pos );
+                        int.vsub( com.pos );
 
-                    ang = b.state.vel.angle();
-                    this.ctx.translate( v.x, v.y );
-                    this.ctx.rotate( ang );
-                    Draw.arrowHead( 'right', 0, 0, 5 ).fill();
-                    this.ctx.rotate( -ang );
-                    this.ctx.translate( -v.x, -v.y );
+                        Draw
+                            .line( center.x + int.x, center.y + int.y, v.x, v.y )
+                            ;
+
+                        this.ctx.translate( v.x, v.y );
+                        this.ctx.rotate( ang );
+                        Draw.arrowHead( 'right', 0, 0, 5 ).fill();
+                        this.ctx.rotate( -ang );
+                        this.ctx.translate( -v.x, -v.y );
+                    }
                 }
 
                 scratch.done();
@@ -1216,16 +1259,11 @@ define([
             // follow the center of mass
             renderer.layer('main').options.follow = planetarySystem.center;
 
-            // add some fun interaction
-            var attractor = Physics.behavior('attractor', {
-                order: 0,
-                strength: 0.002
-            });
-
             // add newtonian attraction to the world
             world.add([
-                Physics.behavior('newtonian', { strength: 0.5 })
-                ,Physics.behavior('body-impulse-response')
+                Physics.behavior('newtonian', { strength: 0.5, min: 0 })
+                ,Physics.behavior('body-collision-detection')
+                ,Physics.behavior('sweep-prune')
                 ,tracker
             ]);
 
