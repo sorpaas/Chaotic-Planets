@@ -413,7 +413,7 @@ define([
             bodyA.refreshView();
             scratch.done();
         }
-        ,calcCenterOfMass: function(lerp){
+        ,calcCenterOfMass: function(lerp, all){
 
             // center of mass pos (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
             // center of mass vel (v) = ( m1*v1 + m2*v2 ... ) / ( m1 + m2 ... )
@@ -429,7 +429,7 @@ define([
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                if ( !b.disabled ){
+                if ( all || !b.disabled ){
                     sumPosX += b.mass * b.state.pos.x;
                     sumPosY += b.mass * b.state.pos.y;
                     sumVelX += b.mass * b.state.vel.x;
@@ -464,10 +464,10 @@ define([
                 b = this.bodies[ i ];
                 b.state.pos.vsub( com.pos );
                 b.state.vel.vsub( com.vel );
-                b.initial.x = b.state.pos.x;
-                b.initial.y = b.state.pos.y;
-                b.initial.vel.x = b.state.vel.x;
-                b.initial.vel.y = b.state.vel.y;
+                // b.initial.x = b.state.pos.x;
+                // b.initial.y = b.state.pos.y;
+                // b.initial.vel.x = b.state.vel.x;
+                // b.initial.vel.y = b.state.vel.y;
             }
             com.pos = new Physics.vector(0,0);
             com.vel = new Physics.vector(0,0);
@@ -503,17 +503,17 @@ define([
             var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0, com = this.center.state;
             last.maxSpeed = 0;
 
-            this.calcCenterOfMass();
+            //this.calcCenterOfMass( false, true );
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 v = b.initial;
 
                 // subtract com
-                v.x -= com.pos.x;
-                v.y -= com.pos.y;
-                v.vel.x -= com.vel.x;
-                v.vel.y -= com.vel.y;
+                // v.x -= com.pos.x;
+                // v.y -= com.pos.y;
+                // v.vel.x -= com.vel.x;
+                // v.vel.y -= com.vel.y;
 
                 b.state.pos.clone( v );
                 b.state.old.pos.clone( v );
@@ -535,6 +535,7 @@ define([
                 last = b;
                 b.disabled = false;
                 this.world.add( b ); // duplicate adding check is built into physicsjs
+                console.log(i, b.state.pos.toString(), b.state.vel.toString());
             }
 
             // reset com
