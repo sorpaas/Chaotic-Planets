@@ -399,6 +399,7 @@ define([
             bodyA.state.vel.mult( bodyA.mass ).vadd( bodyB.state.vel.mult(bodyB.mass) );
             bodyA.mass += bodyB.mass;
             bodyA.state.vel.mult( 1/bodyA.mass );
+            bodyA.color( chroma.interpolate( chroma.hex(bodyA.color()), chroma.hex(bodyB.color()), 0.5, 'lab' ).hex() );
             bodyA.refreshView();
         }
         ,calcCenterOfMass: function(lerp){
