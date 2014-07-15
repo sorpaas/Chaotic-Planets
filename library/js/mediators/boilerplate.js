@@ -535,7 +535,6 @@ define([
                 last = b;
                 b.disabled = false;
                 this.world.add( b ); // duplicate adding check is built into physicsjs
-                console.log(i, b.state.pos.toString(), b.state.vel.toString());
             }
 
             // reset com
@@ -1288,8 +1287,8 @@ define([
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
                 if (self.edit){
-                    throttle( planetarySystem.calcCenterOfMass(true) );
-                    throttle( planetarySystem.subtractCenterOfMass() );
+                    planetarySystem.calcCenterOfMass(true);
+                    planetarySystem.subtractCenterOfMass();
                 }
                 world.step( time );
                 world.render();
