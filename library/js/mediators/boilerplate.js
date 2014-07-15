@@ -390,16 +390,27 @@ define([
         }
         // merge two bodies into one
         ,merge: function( bodyA, bodyB ){
-
+            var scratch = Physics.scratchpad();
+            var r = scratch.vector();
             // remove bodyB from world
             this.world.remove( bodyB );
             bodyB.disabled = true;
             bodyA.oldMass = bodyA.mass;
+            r.clone( bodyA.state.pos );
             // conservation of momentum
             bodyA.state.vel.mult( bodyA.mass ).vadd( bodyB.state.vel.mult(bodyB.mass) );
+            bodyA.state.pos.mult( bodyA.mass ).vadd( bodyB.state.pos.mult(bodyB.mass) );
             bodyA.mass += bodyB.mass;
             bodyA.state.vel.mult( 1/bodyA.mass );
+            bodyA.state.pos.mult( 1/bodyA.mass );
+            bodyA.state.old.pos.vadd( r.vsub(bodyA.state.pos) );
+            bodyA.oldColor = bodyA.color();
+            bodyA.color(chroma.interpolate(
+                chroma.hex( bodyA.color() ),
+                chroma.hex( bodyB.color() ),
+                0.5, 'hsv' ).hex());
             bodyA.refreshView();
+            scratch.done();
         }
         ,calcCenterOfMass: function(lerp){
 
@@ -509,6 +520,10 @@ define([
                 if ( b.oldMass ){
                     b.mass = b.oldMass;
                     b.oldMass = 0;
+                }
+                if ( b.oldColor ){
+                    b.color( b.oldColor );
+                    b.oldColor = null;
                 }
                 // set the max anticipated speed based
                 r = last.state.pos.dist( b.state.pos );
@@ -1259,9 +1274,10 @@ define([
             // follow the center of mass
             renderer.layer('main').options.follow = planetarySystem.center;
 
+            var G = 0.5;
             // add newtonian attraction to the world
             world.add([
-                Physics.behavior('newtonian', { strength: 0.5, min: 0 })
+                Physics.behavior('newtonian', { strength: G, min: 0 })
                 ,Physics.behavior('body-collision-detection')
                 ,Physics.behavior('sweep-prune')
                 ,tracker
@@ -1279,6 +1295,29 @@ define([
 
             // start the ticker
             Physics.util.ticker.start();
+
+            // debug
+            var $debug = $('#debug');
+            world.on('render', function(){
+                var com = planetarySystem.center.state;
+                //calc energy
+                var i, j, l, b, b2;
+                var K = 0;
+                var U = 0;
+                for (i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
+                    b = planetarySystem.bodies[ i ];
+                    if ( !b.disabled ){
+                        K += 0.5 * b.state.vel.distSq( com.vel ) * b.mass;
+                        for ( j = i + 1; j < l; j++ ){
+                            b2 = planetarySystem.bodies[ j ];
+                            if ( !b2.disabled ){
+                                U -= G * b2.mass * b.mass / b2.state.pos.dist( b.state.pos );
+                            }
+                        }
+                    }
+                }
+                $debug.text('E: ' + (K + U).toFixed(4));
+            });
         }
 
         ,contextualMenu: function( body ){
