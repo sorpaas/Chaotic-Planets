@@ -459,7 +459,7 @@ define([
 
         }
         ,subtractCenterOfMass: function(){
-            var b, com=this.center.state;
+            var b, com = this.center.state;
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 b.state.pos.vsub( com.pos );
@@ -516,8 +516,11 @@ define([
                 // v.vel.y -= com.vel.y;
 
                 b.state.pos.clone( v );
-                b.state.old.pos.clone( v );
+                b.state.old.pos.zero();
                 b.state.vel.clone( v.vel );
+                b.state.old.vel.zero();
+                b.state.acc.zero();
+                b.state.old.acc.zero();
                 if ( v.mass ){
                     b.mass = v.mass;
                     v.mass = null;
@@ -527,6 +530,7 @@ define([
                     v.color = null;
                 }
                 // set the max anticipated speed based
+                // TODO: this doesn't really apply anymore
                 r = last.state.pos.dist( b.state.pos );
                 h += r;
                 b.maxSpeed = w * r + (last.maxSpeed);
@@ -536,10 +540,6 @@ define([
                 b.disabled = false;
                 this.world.add( b ); // duplicate adding check is built into physicsjs
             }
-
-            // reset com
-            com.pos.zero();
-            com.vel.zero();
 
             return this;
         }
@@ -611,11 +611,11 @@ define([
                 }
             }
 
-            this.reset();
+            this.calcCenterOfMass();
 
             for ( i = 1, n = this.bodies.length; i < n; i++ ){
                 vertex = this.bodies[ i ];
-                vref = dir.clone( vertex.state.pos ).perp().mult( angVel / dir.normSq()  );
+                vref = dir.clone( vertex.state.pos ).vsub( center.state.pos ).perp().mult( angVel / dir.normSq()  );
                 // randomDir( dir ).mult( Math.random() * 0.2 * vref.norm() ).vadd( vref );
 
                 vertex.initial.vel.x = dir.x;
@@ -1287,7 +1287,7 @@ define([
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
                 if (self.edit){
-                    planetarySystem.calcCenterOfMass(true);
+                    planetarySystem.calcCenterOfMass(true, true);
                     planetarySystem.subtractCenterOfMass();
                 }
                 world.step( time );
