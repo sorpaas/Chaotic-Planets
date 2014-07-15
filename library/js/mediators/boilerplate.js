@@ -408,7 +408,8 @@ define([
             bodyA.color(chroma.interpolate(
                 chroma.hex( bodyA.color() ),
                 chroma.hex( bodyB.color() ),
-                0.5, 'hsv' ).hex());
+                0.5, 'lab' ).hex());
+
             bodyA.refreshView();
             scratch.done();
         }
