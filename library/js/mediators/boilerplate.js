@@ -315,7 +315,7 @@ define([
             }
 
             this._color = chroma(hex).hex();
-            this.lastColor = this._color;
+            this.oldColor = this._color;
             this.colorScale = getColorScale( this );
         }
         ,'velocityArrowHead': function( ret ){
@@ -390,18 +390,30 @@ define([
         }
         // merge two bodies into one
         ,merge: function( bodyA, bodyB ){
-
+            var scratch = Physics.scratchpad();
+            var r = scratch.vector();
             // remove bodyB from world
             this.world.remove( bodyB );
             bodyB.disabled = true;
-            bodyA.oldMass = bodyA.mass;
+            bodyA.initial.mass = bodyA.mass;
+            r.clone( bodyA.state.pos );
             // conservation of momentum
             bodyA.state.vel.mult( bodyA.mass ).vadd( bodyB.state.vel.mult(bodyB.mass) );
+            bodyA.state.pos.mult( bodyA.mass ).vadd( bodyB.state.pos.mult(bodyB.mass) );
             bodyA.mass += bodyB.mass;
             bodyA.state.vel.mult( 1/bodyA.mass );
+            bodyA.state.pos.mult( 1/bodyA.mass );
+            bodyA.state.old.pos.vadd( r.vsub(bodyA.state.pos) );
+            bodyA.initial.color = bodyA.color();
+            bodyA.color(chroma.interpolate(
+                chroma.hex( bodyA.color() ),
+                chroma.hex( bodyB.color() ),
+                0.5, 'lab' ).hex());
+
             bodyA.refreshView();
+            scratch.done();
         }
-        ,calcCenterOfMass: function(lerp){
+        ,calcCenterOfMass: function(lerp, all){
 
             // center of mass pos (x) = ( m1*x1 + m2*x2 ... ) / ( m1 + m2 ... )
             // center of mass vel (v) = ( m1*v1 + m2*v2 ... ) / ( m1 + m2 ... )
@@ -417,7 +429,7 @@ define([
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
-                if ( !b.disabled ){
+                if ( all || !b.disabled ){
                     sumPosX += b.mass * b.state.pos.x;
                     sumPosY += b.mass * b.state.pos.y;
                     sumVelX += b.mass * b.state.vel.x;
@@ -437,28 +449,28 @@ define([
                     sumVelY/sumMass)
                 ,0.5);
             }else{
-                com.pos = new Physics.vector(
+                com.pos.set(
                     sumPosX/sumMass,
                     sumPosY/sumMass);
-                com.vel = new Physics.vector(
+                com.vel.set(
                     sumVelX/sumMass,
                     sumVelY/sumMass);
             }
 
         }
         ,subtractCenterOfMass: function(){
-            var b, com=this.center.state;
+            var b, com = this.center.state;
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 b.state.pos.vsub( com.pos );
                 b.state.vel.vsub( com.vel );
-                b.initial.x = b.state.pos.x;
-                b.initial.y = b.state.pos.y;
-                b.initial.vel.x = b.state.vel.x;
-                b.initial.vel.y = b.state.vel.y;
+                // b.initial.x = b.state.pos.x;
+                // b.initial.y = b.state.pos.y;
+                // b.initial.vel.x = b.state.vel.x;
+                // b.initial.vel.y = b.state.vel.y;
             }
-            com.pos = new Physics.vector(0,0);
-            com.vel = new Physics.vector(0,0);
+            com.pos.zero();
+            com.vel.zero();
         }
         ,addVertex: function( x, y ){
 
@@ -491,26 +503,34 @@ define([
             var v, b, w = this.maxAngularVel(), r, last = this.center, h = 0, com = this.center.state;
             last.maxSpeed = 0;
 
-            this.calcCenterOfMass();
+            //this.calcCenterOfMass( false, true );
 
             for ( var i = 1, l = this.bodies.length; i < l; i++ ){
                 b = this.bodies[ i ];
                 v = b.initial;
 
                 // subtract com
-                v.x -= com.pos.x;
-                v.y -= com.pos.y;
-                v.vel.x -= com.vel.x;
-                v.vel.y -= com.vel.y;
+                // v.x -= com.pos.x;
+                // v.y -= com.pos.y;
+                // v.vel.x -= com.vel.x;
+                // v.vel.y -= com.vel.y;
 
                 b.state.pos.clone( v );
-                b.state.old.pos.clone( v );
+                b.state.old.pos.zero();
                 b.state.vel.clone( v.vel );
-                if ( b.oldMass ){
-                    b.mass = b.oldMass;
-                    b.oldMass = 0;
+                b.state.old.vel.zero();
+                b.state.acc.zero();
+                b.state.old.acc.zero();
+                if ( v.mass ){
+                    b.mass = v.mass;
+                    v.mass = null;
+                }
+                if ( v.color ){
+                    b.color( v.color );
+                    v.color = null;
                 }
                 // set the max anticipated speed based
+                // TODO: this doesn't really apply anymore
                 r = last.state.pos.dist( b.state.pos );
                 h += r;
                 b.maxSpeed = w * r + (last.maxSpeed);
@@ -520,10 +540,6 @@ define([
                 b.disabled = false;
                 this.world.add( b ); // duplicate adding check is built into physicsjs
             }
-
-            // reset com
-            com.pos.zero();
-            com.vel.zero();
 
             return this;
         }
@@ -595,11 +611,11 @@ define([
                 }
             }
 
-            this.reset();
+            this.calcCenterOfMass();
 
             for ( i = 1, n = this.bodies.length; i < n; i++ ){
                 vertex = this.bodies[ i ];
-                vref = dir.clone( vertex.state.pos ).perp().mult( angVel / dir.normSq()  );
+                vref = dir.clone( vertex.state.pos ).vsub( center.state.pos ).perp().mult( angVel / dir.normSq()  );
                 // randomDir( dir ).mult( Math.random() * 0.2 * vref.norm() ).vadd( vref );
 
                 vertex.initial.vel.x = dir.x;
@@ -1259,9 +1275,10 @@ define([
             // follow the center of mass
             renderer.layer('main').options.follow = planetarySystem.center;
 
+            var G = 0.5;
             // add newtonian attraction to the world
             world.add([
-                Physics.behavior('newtonian', { strength: 0.5, min: 0 })
+                Physics.behavior('newtonian', { strength: G, min: 0 })
                 ,Physics.behavior('body-collision-detection')
                 ,Physics.behavior('sweep-prune')
                 ,tracker
@@ -1270,8 +1287,8 @@ define([
             // subscribe to ticker to advance the simulation
             Physics.util.ticker.on(function( time ) {
                 if (self.edit){
-                    throttle( planetarySystem.calcCenterOfMass(true) );
-                    throttle( planetarySystem.subtractCenterOfMass() );
+                    planetarySystem.calcCenterOfMass(true, true);
+                    planetarySystem.subtractCenterOfMass();
                 }
                 world.step( time );
                 world.render();
@@ -1279,6 +1296,29 @@ define([
 
             // start the ticker
             Physics.util.ticker.start();
+
+            // debug
+            var $debug = $('#debug');
+            world.on('render', function(){
+                var com = planetarySystem.center.state;
+                //calc energy
+                var i, j, l, b, b2;
+                var K = 0;
+                var U = 0;
+                for (i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
+                    b = planetarySystem.bodies[ i ];
+                    if ( !b.disabled ){
+                        K += 0.5 * b.state.vel.distSq( com.vel ) * b.mass;
+                        for ( j = i + 1; j < l; j++ ){
+                            b2 = planetarySystem.bodies[ j ];
+                            if ( !b2.disabled ){
+                                U -= G * b2.mass * b.mass / b2.state.old.pos.dist( b.state.old.pos );
+                            }
+                        }
+                    }
+                }
+                $debug.text('E: ' + (K + U).toFixed(4));
+            });
         }
 
         ,contextualMenu: function( body ){

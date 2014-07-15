@@ -8,6 +8,16 @@ html, body, #wrap-outer {
     height: 100%;
 }
 
+#debug {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #fff;
+    color: #000;
+    font-size: 20px;
+    width: 400px;
+}
+
 .radio-group {
     overflow: hidden;
     // the radio buttons

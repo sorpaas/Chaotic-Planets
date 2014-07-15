@@ -16,7 +16,7 @@
     }
 }(this, function (Physics) {
     'use strict';
-    /** 
+    /**
      * class NewtonianBehavior < Behavior
      *
      * `Physics.behavior('newtonian')`.
@@ -29,21 +29,21 @@
      * - min: The minimum distance between bodies at which to apply the behavior. (default: `false`... autocalculate)
      **/
     Physics.behavior('newtonian', function( parent ){
-    
+
         var defaults = {
-    
+
             strength: 1,
             // max distance to apply it to
             max: false, // infinite
             // min distance to apply it to
             min: false // auto calc
         };
-    
+
         return {
-    
+
             // extended
             init: function( options ){
-    
+
                 var self = this;
                 // call parent init method
                 parent.init.call( this );
@@ -54,10 +54,10 @@
                 });
                 this.options( options );
             },
-            
+
             // extended
             behave: function( data ){
-    
+
                 var bodies = this.getTargets()
                     ,body
                     ,other
@@ -69,35 +69,35 @@
                     ,normsq
                     ,g
                     ;
-    
+
                 for ( var j = 0, l = bodies.length; j < l; j++ ){
-                    
+
                     body = bodies[ j ];
-    
+
                     for ( var i = j + 1; i < l; i++ ){
-                        
+
                         other = bodies[ i ];
                         // clone the position
                         pos.clone( other.state.pos );
                         pos.vsub( body.state.pos );
                         // get the square distance
                         normsq = pos.normSq();
-    
+
                         if (normsq > minDistSq && normsq < maxDistSq){
-    
+
                             g = strength / normsq;
-    
+
                             body.accelerate( pos.normalize().mult( g * other.mass ) );
                             other.accelerate( pos.mult( body.mass/other.mass ).negate() );
                         }
                     }
                 }
-    
+
                 scratch.done();
             }
         };
     });
-    
+
     // end module: behaviors/newtonian.js
     return Physics;
 }));// UMD
