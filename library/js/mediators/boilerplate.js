@@ -315,7 +315,7 @@ define([
             }
 
             this._color = chroma(hex).hex();
-            this.lastColor = this._color;
+            this.oldColor = this._color;
             this.colorScale = getColorScale( this );
         }
         ,'velocityArrowHead': function( ret ){
@@ -395,7 +395,7 @@ define([
             // remove bodyB from world
             this.world.remove( bodyB );
             bodyB.disabled = true;
-            bodyA.oldMass = bodyA.mass;
+            bodyA.initial.mass = bodyA.mass;
             r.clone( bodyA.state.pos );
             // conservation of momentum
             bodyA.state.vel.mult( bodyA.mass ).vadd( bodyB.state.vel.mult(bodyB.mass) );
@@ -404,7 +404,7 @@ define([
             bodyA.state.vel.mult( 1/bodyA.mass );
             bodyA.state.pos.mult( 1/bodyA.mass );
             bodyA.state.old.pos.vadd( r.vsub(bodyA.state.pos) );
-            bodyA.oldColor = bodyA.color();
+            bodyA.initial.color = bodyA.color();
             bodyA.color(chroma.interpolate(
                 chroma.hex( bodyA.color() ),
                 chroma.hex( bodyB.color() ),
@@ -518,13 +518,13 @@ define([
                 b.state.pos.clone( v );
                 b.state.old.pos.clone( v );
                 b.state.vel.clone( v.vel );
-                if ( b.oldMass ){
-                    b.mass = b.oldMass;
-                    b.oldMass = 0;
+                if ( v.mass ){
+                    b.mass = v.mass;
+                    v.mass = null;
                 }
-                if ( b.oldColor ){
-                    b.color( b.oldColor );
-                    b.oldColor = null;
+                if ( v.color ){
+                    b.color( v.color );
+                    v.color = null;
                 }
                 // set the max anticipated speed based
                 r = last.state.pos.dist( b.state.pos );
@@ -1312,7 +1312,7 @@ define([
                         for ( j = i + 1; j < l; j++ ){
                             b2 = planetarySystem.bodies[ j ];
                             if ( !b2.disabled ){
-                                U -= G * b2.mass * b.mass / b2.state.pos.dist( b.state.pos );
+                                U -= G * b2.mass * b.mass / b2.state.old.pos.dist( b.state.old.pos );
                             }
                         }
                     }
