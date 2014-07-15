@@ -449,10 +449,10 @@ define([
                     sumVelY/sumMass)
                 ,0.5);
             }else{
-                com.pos = new Physics.vector(
+                com.pos.set(
                     sumPosX/sumMass,
                     sumPosY/sumMass);
-                com.vel = new Physics.vector(
+                com.vel.set(
                     sumVelX/sumMass,
                     sumVelY/sumMass);
             }
@@ -469,8 +469,8 @@ define([
                 // b.initial.vel.x = b.state.vel.x;
                 // b.initial.vel.y = b.state.vel.y;
             }
-            com.pos = new Physics.vector(0,0);
-            com.vel = new Physics.vector(0,0);
+            com.pos.zero();
+            com.vel.zero();
         }
         ,addVertex: function( x, y ){
 
