@@ -1341,29 +1341,6 @@ define([
 
             // start the ticker
             Physics.util.ticker.start();
-
-            // debug
-            var $debug = $('#debug');
-            world.on('render', function(){
-                var com = planetarySystem.center.state;
-                //calc energy
-                var i, j, l, b, b2;
-                var K = 0;
-                var U = 0;
-                for (i = 1, l = planetarySystem.bodies.length; i < l; i++ ){
-                    b = planetarySystem.bodies[ i ];
-                    if ( !b.disabled ){
-                        K += 0.5 * b.state.vel.distSq( com.vel ) * b.mass;
-                        for ( j = i + 1; j < l; j++ ){
-                            b2 = planetarySystem.bodies[ j ];
-                            if ( !b2.disabled ){
-                                U -= G * b2.mass * b.mass / b2.state.old.pos.dist( b.state.old.pos );
-                            }
-                        }
-                    }
-                }
-                $debug.text('E: ' + (K + U).toFixed(4));
-            });
         }
 
         ,contextualMenu: function( body ){
