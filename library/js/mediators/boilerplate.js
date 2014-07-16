@@ -518,7 +518,7 @@ define([
                 // v.vel.y -= com.vel.y;
 
                 b.state.pos.clone( v );
-                b.state.old.pos.zero();
+                b.state.old.pos.clone( v );
                 b.state.vel.clone( v.vel );
                 b.state.old.vel.zero();
                 b.state.acc.zero();
