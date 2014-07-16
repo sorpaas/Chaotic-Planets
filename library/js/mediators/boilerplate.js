@@ -839,6 +839,16 @@ define([
 
                 var body;
 
+                // get a function to test whether bodies are near pos
+                function $near( pos, r ){
+                    pos = Physics.vector( pos );
+                    return function( body ){
+                        return body.state.pos.dist( pos ) <= r;
+                    };
+                }
+
+                var grabRadius = 15;
+
                 $('#viewport').hammer()
                     .on('touchstart', 'canvas', function( e ){
                         e.preventDefault();
@@ -849,7 +859,7 @@ define([
                         e.preventDefault();
                         if ( self.edit ){
 
-                            body = self.world.findOne({ $at: pos });
+                            body = self.world.findOne($near(pos, grabRadius));
 
                             if ( body ){
                                 self.emit('select', body);
@@ -1200,7 +1210,7 @@ define([
                     b = self.selectedBody;
                     Draw( this.ctx )
                         .styles( selectedOutline )
-                        .circle( b.state.pos.x, b.state.pos.y, b.geometry.radius )
+                        .circle( b.state.pos.x, b.state.pos.y, 15 )
                         ;
                 }
             };
