@@ -466,10 +466,10 @@ define([
                 b = this.bodies[ i ];
                 b.state.pos.vsub( com.pos );
                 b.state.vel.vsub( com.vel );
-                // b.initial.x = b.state.pos.x;
-                // b.initial.y = b.state.pos.y;
-                // b.initial.vel.x = b.state.vel.x;
-                // b.initial.vel.y = b.state.vel.y;
+                b.initial.x = b.state.pos.x;
+                b.initial.y = b.state.pos.y;
+                b.initial.vel.x = b.state.vel.x;
+                b.initial.vel.y = b.state.vel.y;
             }
             com.pos.zero();
             com.vel.zero();
@@ -606,7 +606,7 @@ define([
                 ,phi
                 ;
 
-            if ( Math.abs(delta) < 0.001 ){
+            if ( Math.abs(delta) < 0.1 ){
                 return;
             }
 
@@ -1192,12 +1192,7 @@ define([
             });
             var oldrender = renderer.layer('main').render;
             renderer.layer('main').render = function(){
-                var b, p, points = [];
-                var t = world._meta.interpolateTime || 0;
-                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
-                    b = planetarySystem.bodies[i];
-                    points.push([ b.state.pos.x + b.state.vel.x * t , b.state.pos.y + b.state.vel.y * t ]);
-                }
+                var b, p;
 
                 Draw( this.ctx )
                     .offset( center.x, center.y )
