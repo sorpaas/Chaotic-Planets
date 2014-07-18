@@ -466,10 +466,10 @@ define([
                 b = this.bodies[ i ];
                 b.state.pos.vsub( com.pos );
                 b.state.vel.vsub( com.vel );
-                // b.initial.x = b.state.pos.x;
-                // b.initial.y = b.state.pos.y;
-                // b.initial.vel.x = b.state.vel.x;
-                // b.initial.vel.y = b.state.vel.y;
+                b.initial.x = b.state.pos.x;
+                b.initial.y = b.state.pos.y;
+                b.initial.vel.x = b.state.vel.x;
+                b.initial.vel.y = b.state.vel.y;
             }
             com.pos.zero();
             com.vel.zero();
@@ -606,7 +606,7 @@ define([
                 ,phi
                 ;
 
-            if ( Math.abs(delta) < 0.001 ){
+            if ( Math.abs(delta) < 0.1 ){
                 return;
             }
 
