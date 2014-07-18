@@ -1192,12 +1192,7 @@ define([
             });
             var oldrender = renderer.layer('main').render;
             renderer.layer('main').render = function(){
-                var b, p, points = [];
-                var t = world._meta.interpolateTime || 0;
-                for ( var i = 0, l = planetarySystem.bodies.length; i < l; i++ ){
-                    b = planetarySystem.bodies[i];
-                    points.push([ b.state.pos.x + b.state.vel.x * t , b.state.pos.y + b.state.vel.y * t ]);
-                }
+                var b, p;
 
                 Draw( this.ctx )
                     .offset( center.x, center.y )
