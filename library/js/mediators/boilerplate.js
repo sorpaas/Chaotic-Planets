@@ -482,7 +482,7 @@ define([
             var b = Physics.body('circle', {
                 x: x
                 ,y: y
-                ,radius: 3
+                ,radius: 4
                 ,initial: v
                 ,path: true
                 ,maxSpeed: 1
