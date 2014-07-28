@@ -1,0 +1,23 @@
+It's been a bit chaotic at MinuteLabs recently... we've converted our
+pendulum lab into a planetary system simulation! Two planets orbiting one
+another creates a very predictable pattern, just like a simple pendulum does.
+But once you add a third planet, things get chaotic, and it's not possible
+to accurately predict where the planets will move unless you had full and
+exact knowledge about the initial conditions.
+
+You might notice when you're editing that the screen pans when moving planets around.
+This is because the interface will automatically track the center
+of mass. It's also the reason why editing the velocity of one planet
+changes the others. Tracking the center of mass gives the best chance of
+keeping all the planets on screen so you can see the patterns.
+
+As usual, there's a link in the video description, or you can just visit MinuteLabs.io
+and look for the Chaotic Planets Lab.
+
+Special thanks goes to Nick Bartzokas for helping out with the coding.
+
+Also, in case you missed it, be sure to also check out our Fusion Lab
+done in collaboration with PHD Comics. We didn't make a teaser video for it like
+our other labs,
+That's why following MinuteLabs on Subbable is the best way to make sure you
+don't miss any of our creations.
