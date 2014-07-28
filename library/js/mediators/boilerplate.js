@@ -415,6 +415,7 @@ define([
 
             bodyA.refreshView();
             scratch.done();
+            this.world.emit('merge', { body: bodyA });
         }
         ,calcCenterOfMass: function(lerp, all){
 
@@ -1320,8 +1321,70 @@ define([
                 scratch.done();
             };
 
+            var explosions = [];
+            renderer.addLayer('explosions', null, { zIndex: 1, offset: center }).render = function(){
+                var exp;
+                var ctx = this.ctx;
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.save();
+                ctx.translate( this.options.offset.x - this.options.follow.state.pos.x, this.options.offset.y - this.options.follow.state.pos.y );
+                for ( var i = 0, l = explosions.length; i < l; i++ ){
+                    exp = explosions[ i ];
+                    if ( exp ){
+                        exp.render( ctx );
+                    }
+                }
+                ctx.restore();
+            };
+
+            world.on('merge', function( data ){
+                var exp = {
+                    pos: Physics.vector(data.body.state.pos)
+                    ,n: 14
+                    ,particles: []
+                    ,lifetime: 60
+                    ,count: 0
+                    ,r: 100
+                    ,render: function( ctx ){
+                        var scratch = Physics.scratchpad();
+                        var tmp = scratch.vector();
+                        var p;
+                        var progress = this.count/this.lifetime;
+                        this.count++;
+
+                        // draw little dust particles at their corresponding locations
+                        // lerp makes them move from their initial pos to their end pos
+                        for ( var i = 0; i < this.n; i++ ){
+                            p = this.particles[ i ];
+                            tmp.clone( p.dir ).mult( lerp(0, p.end, progress) ).vadd( this.pos );
+                            ctx.fillStyle = 'rgba(255,255,255,'+(1-progress)+')';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.arc(tmp.x, tmp.y, 1, 0, Math.PI*2, false);
+                            ctx.closePath();
+                            ctx.fill();
+                        }
+
+                        if ( this.count > this.lifetime ){
+                            explosions.splice( Physics.util.indexOf( explosions, this ), 1 );
+                        }
+                        scratch.done();
+                    }
+                };
+
+                for ( var i = 0; i < exp.n; i++ ){
+                    exp.particles.push({
+                        dir: randomDir( Physics.vector() )
+                        ,end: exp.r * Math.random()
+                    });
+                }
+
+                explosions.push(exp);
+            });
+
             // follow the center of mass
             renderer.layer('main').options.follow = planetarySystem.center;
+            renderer.layer('explosions').options.follow = planetarySystem.center;
 
             // add newtonian attraction to the world
             world.add([
