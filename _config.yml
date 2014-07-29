@@ -3,7 +3,7 @@ markdown: rdiscount
 exclude: ["README.md", "CNAME", "LICENSE", "build", "config.rb", "Gruntfile.js", "package.json", "jshint.json"]
 
 title : "Chaotic Planets"
-id : ""
+id : "93214000299"
 description : "Build your own chaotic planetary system."
 thumb: "thumb.gif"
 version: "0.0.2"
