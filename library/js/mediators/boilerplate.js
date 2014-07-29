@@ -1343,7 +1343,7 @@ define([
                 var exp = {
                     n: 14
                     ,particles: []
-                    ,lifetime: 60
+                    ,lifetime: 30
                     ,count: 0
                     ,r: 100
                     ,render: function( ctx ){
