@@ -541,7 +541,9 @@ define([
                 b.maxSpeed *= 1.3 * lerp(0.5, 1.4, Math.abs(last.mass - b.mass)/(last.mass + b.mass)) / i; // multiply by a fudge factor
                 b.refreshView();
                 last = b;
-                b.started && b.started(false);
+                if ( b.started ){
+                    b.started(false);
+                }
                 b.disabled = false;
                 this.world.add( b ); // duplicate adding check is built into physicsjs
             }

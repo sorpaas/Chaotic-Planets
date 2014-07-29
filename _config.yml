@@ -3,15 +3,15 @@ markdown: rdiscount
 exclude: ["README.md", "CNAME", "LICENSE", "build", "config.rb", "Gruntfile.js", "package.json", "jshint.json"]
 
 title : "Chaotic Planets"
-id : "85732814424"
-description : "Create your own orbital chaos."
+id : ""
+description : "Build your own chaotic planetary system."
 thumb: "thumb.gif"
 version: "0.0.2"
 
 ml_url: "http://minutelabs.io"
 ml_library: "http://labs.minutelabs.io/library"
 ml_assets: "http://labs.minutelabs.io/assets"
-library_path: "library"
+library_path: "library-build"
 
 show :
   branding: true
